@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import UploadCard from "@/components/uploadCard";
 import FreeformInputCard from "@/components/freeformInputCard";
+import StructuredDataViewer from "@/components/structuredDataViewer";
 export default function HomePage() {
     const { user, loading } = useAuth();
     const router = useRouter();
@@ -38,6 +39,7 @@ export default function HomePage() {
             
             <UploadCard />
             <FreeformInputCard />
+            <StructuredDataViewer />
         </div>
     );
 }
