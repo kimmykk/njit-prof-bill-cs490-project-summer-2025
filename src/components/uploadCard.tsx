@@ -121,7 +121,7 @@ export default function UploadCard() {
               if (inputRef.current) inputRef.current.value = "";
             }}
             onChange={e => handleFiles(e.target.files)}
-            accept=".pdf,.doc,.docx"
+            accept=".pdf,.doc,.docx,.txt,.md"
           />
         </div>
 
