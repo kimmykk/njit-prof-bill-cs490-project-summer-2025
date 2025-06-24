@@ -41,7 +41,7 @@ export default function SidePanel({ isSidePanelOpen }: SidePanelProps) {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/home/Objective" className="hover:underline">
+                                <Link href="/home/objective" className="hover:underline">
                                     Objective
                                 </Link>
                             </li>
