@@ -36,8 +36,33 @@ export default function SidePanel({ isSidePanelOpen }: SidePanelProps) {
                                 </Link>
                             </li>
                             <li>
+                                <Link href="/home/contact" className="hover:underline">
+                                    Contact
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/home/Objective" className="hover:underline">
+                                    Objective
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/home/jobs" className="hover:underline">
+                                    Jobs
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/home/education" className="hover:underline">
+                                    Education
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/home/skills" className="hover:underline">
+                                    Skills
+                                </Link>
+                            </li>
+                            <li>
                                 <Link href="/home/settings" className="hover:underline">
-                                    Settings
+                                    User Settings
                                 </Link>
                             </li>
                         </ul>
