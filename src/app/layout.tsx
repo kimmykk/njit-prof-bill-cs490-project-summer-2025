@@ -1,6 +1,6 @@
 "use client";
 
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, IBM_Plex_Mono } from "next/font/google";
 import { AuthProvider } from "@/context/authContext";
 import { Toaster } from "sonner";
 import "@/styles/globals.css";
@@ -15,6 +15,16 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  variable: "--font-ibm-plex-mono",
+  weight: ["400", "500", "600", "700"],
+});
+
+// change font here and in global.css (make sure they match)
+const sansFont = ibmPlexMono;
+const monoFont = ibmPlexMono;
 
 export default function RootLayout({
   children,
@@ -45,7 +55,7 @@ export default function RootLayout({
         <link rel="canonical" href="https://fouriergauss.com" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${sansFont.variable} ${monoFont.variable} font-sans antialiased`}
       >
         <AuthProvider>
           <AppThemeProvider>

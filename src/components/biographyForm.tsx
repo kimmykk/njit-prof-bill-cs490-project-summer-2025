@@ -91,7 +91,10 @@ const BiographyForm: React.FC = () => {
             })}
             rows={12}
             className="w-full px-4 py-3 border border-neutral-600 rounded-lg bg-neutral-900 text-neutral-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-            placeholder="Write your professional biography here. Include objectives, experience, education, skills…"
+            placeholder="Write your professional biography here. Include your career objectives, work experience, education, skills, and accomplishments. The more detailed you are, the better our AI can structure your information.
+
+Example:
+I am a software engineer with 5 years of experience in full-stack development. I graduated from XYZ University with a Computer Science degree in 2019. I have worked at ABC Company as a Junior Developer and then Senior Developer, where I built web applications using React, Node.js, and PostgreSQL. My skills include JavaScript, Python, AWS, and project management. I am passionate about creating user-friendly applications and leading development teams..."
           />
           {errors.biography && (
             <p className="mt-1 text-sm text-red-500">
