@@ -41,15 +41,15 @@ const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onCl
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="bg-white border border-gray-200 rounded-lg p-6"
+      className="bg-neutral-800 rounded-lg p-6"
     >
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold text-white">
           {education ? 'Edit Education Entry' : 'Add New Education'}
         </h3>
         <button
           onClick={onClose}
-          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 text-red-500 hover:text-white hover:bg-red-500 hover:bg-gray-100 rounded-lg transition-colors"
         >
           <X className="h-4 w-4" />
         </button>
@@ -57,7 +57,7 @@ const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onCl
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-white mb-2">
             School/Institution Name *
           </label>
           <input
@@ -72,7 +72,7 @@ const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onCl
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-white-700 mb-2">
             Degree/Certificate/Program *
           </label>
           <input
@@ -88,7 +88,7 @@ const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onCl
 
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-white-700 mb-2">
               Dates Attended *
             </label>
             <input
@@ -103,7 +103,7 @@ const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onCl
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-white-700 mb-2">
               GPA (Optional)
             </label>
             <input
@@ -112,7 +112,7 @@ const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onCl
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="e.g., 3.8 or 3.8/4.0"
             />
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-white-500">
               Only include if 3.5 or higher
             </p>
           </div>
@@ -122,7 +122,7 @@ const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onCl
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 text-white border border-gray-300 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
           >
             Cancel
           </button>
@@ -137,9 +137,9 @@ const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onCl
       </form>
 
       {/* Examples */}
-      <div className="mt-6 bg-gray-50 rounded-lg p-4">
-        <h4 className="font-semibold text-gray-900 mb-2">📚 Examples:</h4>
-        <div className="space-y-2 text-sm text-gray-700">
+      <div className="mt-6 bg-neutral-700 rounded-lg p-4">
+        <h4 className="font-semibold text-white mb-2">📚 Examples:</h4>
+        <div className="space-y-2 text-sm text-white">
           <div>
             <strong>University:</strong> &quot;Bachelor of Science in Computer Science&quot;
           </div>

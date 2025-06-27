@@ -45,13 +45,13 @@ const SkillsSection = () => {
       className="space-y-6"
     >
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Skills</h2>
-        <p className="text-gray-600">Manage your professional skills and competencies</p>
+        <h2 className="text-2xl font-bold text-foreground mb-2">Skills</h2>
+        <p className="text-muted-foreground">Manage your professional skills and competencies</p>
       </div>
 
       {/* Add New Skill */}
-      <div className="bg-gray-50 rounded-lg p-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+      <div className="bg-neutral-800 rounded-lg p-4">
+        <label className="block text-sm font-medium mb-2">
           Add New Skill
         </label>
         <div className="flex space-x-2">
@@ -60,7 +60,7 @@ const SkillsSection = () => {
             value={newSkill}
             onChange={(e) => setNewSkill(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="bg-black flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Enter a skill (e.g., JavaScript, Project Management)"
           />
           <button
@@ -80,14 +80,14 @@ const SkillsSection = () => {
       {/* Skills List */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">Your Skills ({skills.length})</h3>
+          <h3 className="text-lg font-semibold">Your Skills ({skills.length})</h3>
           {skills.length > 0 && (
-            <p className="text-sm text-gray-500">Drag to reorder</p>
+            <p className="text-sm text-muted-foreground">Drag to reorder</p>
           )}
         </div>
 
         {skills.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-muted-foreground">
             <p>No skills added yet. Add your first skill above!</p>
           </div>
         ) : (
@@ -98,7 +98,7 @@ const SkillsSection = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="flex items-center space-x-3 p-3 bg-white border border-gray-200 rounded-lg hover:shadow-sm transition-shadow"
+                className="flex items-center space-x-3 p-3 bg-neutral-800 border hover:ring-2 hover:ring-blue-500 rounded-lg hover:shadow-sm transition-shadow"
               >
                 <button
                   className="cursor-grab hover:cursor-grabbing text-gray-400 hover:text-gray-600"
@@ -110,7 +110,7 @@ const SkillsSection = () => {
                   <GripVertical className="h-4 w-4" />
                 </button>
                 
-                <span className="flex-1 text-gray-900">{skill}</span>
+                <span className="flex-1">{skill}</span>
                 
                 <button
                   onClick={() => removeSkill(skill)}
@@ -125,9 +125,9 @@ const SkillsSection = () => {
       </div>
 
       {/* Skill Categories */}
-      <div className="bg-blue-50 rounded-lg p-4">
-        <h4 className="font-semibold text-blue-900 mb-2">💡 Skill Categories to Consider:</h4>
-        <div className="grid md:grid-cols-2 gap-4 text-sm text-blue-800">
+      <div className="rounded-lg p-4 border border-blue-500">
+        <h4 className="font-semibold text-amber-400 mb-2 space-x-2">💡 Skill Categories to Consider:</h4>
+        <div className="grid md:grid-cols-2 gap-4 text-sm text-neutral-200">
           <div>
             <strong>Technical Skills:</strong>
             <ul className="mt-1 space-y-1">
@@ -150,11 +150,11 @@ const SkillsSection = () => {
       </div>
 
       {/* Common Skills Suggestions */}
-      <div className="bg-gray-50 rounded-lg p-4">
-        <h4 className="font-semibold text-gray-900 mb-3">🚀 Popular Skills by Category:</h4>
+      <div className="rounded-lg p-4 border border-blue-500">
+        <h4 className="font-semibold text-amber-400 mb-3">🚀 Popular Skills by Category:</h4>
         <div className="space-y-3">
           <div>
-            <span className="text-sm font-medium text-gray-700">Technology:</span>
+            <span className="text-sm font-medium text-blue-400">Technology:</span>
             <div className="flex flex-wrap gap-2 mt-1">
               {['JavaScript', 'Python', 'React', 'Node.js', 'SQL', 'AWS', 'Docker', 'Git'].map(skill => (
                 <button
@@ -167,7 +167,7 @@ const SkillsSection = () => {
                     }
                   }}
                   disabled={skills.includes(skill)}
-                  className="px-2 py-1 text-xs bg-white border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-2 py-1 text-xs bg-neutral-800 border border-gray-300 rounded hover:bg-gray-50 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {skill}
                 </button>
@@ -175,7 +175,7 @@ const SkillsSection = () => {
             </div>
           </div>
           <div>
-            <span className="text-sm font-medium text-gray-700">Business:</span>
+            <span className="text-sm font-medium text-blue-400">Business:</span>
             <div className="flex flex-wrap gap-2 mt-1">
               {['Project Management', 'Data Analysis', 'Marketing', 'Sales', 'Customer Service', 'Strategic Planning'].map(skill => (
                 <button
@@ -188,7 +188,7 @@ const SkillsSection = () => {
                     }
                   }}
                   disabled={skills.includes(skill)}
-                  className="px-2 py-1 text-xs bg-white border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-2 py-1 text-xs bg-neutral-800 border border-gray-300 rounded hover:bg-gray-50 hover:text-black disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {skill}
                 </button>

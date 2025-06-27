@@ -69,15 +69,15 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="bg-white border border-gray-200 rounded-lg p-6"
+      className="bg-neutral-800 rounded-lg p-6"
     >
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold">
           {job ? 'Edit Job Entry' : 'Add New Job'}
         </h3>
         <button
           onClick={onClose}
-          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 text-red-500 hover:text-white hover:bg-red-500 rounded-lg transition-colors"
         >
           <X className="h-4 w-4" />
         </button>
@@ -86,13 +86,13 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-white mb-2">
               Company Name *
             </label>
             <input
               {...register('company', { required: 'Company name is required' })}
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="bg-black w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="e.g., TechCorp Inc."
             />
             {errors.company && (
@@ -101,13 +101,13 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-white mb-2">
               Job Title *
             </label>
             <input
               {...register('title', { required: 'Job title is required' })}
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="bg-black w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="e.g., Senior Software Engineer"
             />
             {errors.title && (
@@ -117,30 +117,70 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className='flex flex-col relative w-full'>
+            <label className="block text-sm font-medium text-white mb-2">
               Start Date *
             </label>
             <input
               {...register('startDate', { required: 'Start date is required' })}
               type="month"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="bg-black w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+
+            {/* Custom calendar SVG icon */}
+            <div className="pointer-events-none absolute right-3 top-10">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="white"
+                viewBox="2 0 24 24"
+                width="17"
+                height="17"
+              >
+                <path d="M7 10h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z" />
+                <path
+                  fillRule="evenodd"
+                  d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 
+                  2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1h-2v2H8V1H6v2H5zm0 
+                  2h14v2H5V5zm0 4h14v10H5V9z"
+                />
+              </svg>
+            </div>
+
             {errors.startDate && (
               <p className="mt-1 text-sm text-red-600">{errors.startDate.message}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-white mb-2">
               End Date
             </label>
             <input
               {...register('endDate')}
               type="month"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="bg-black w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Leave empty if current job"
             />
+
+            {/* Custom calendar SVG icon */}
+            <div className="pointer-events-none absolute right-27.5 top-159">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="white"
+                viewBox="0 0 24 24"
+                width="17"
+                height="17"
+              >
+                <path d="M7 10h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z" />
+                <path
+                  fillRule="evenodd"
+                  d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 
+                  2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1h-2v2H8V1H6v2H5zm0 
+                  2h14v2H5V5zm0 4h14v10H5V9z"
+                />
+              </svg>
+            </div>
+
             {isCurrentJob && (
               <p className="mt-1 text-sm text-green-600">Current position</p>
             )}
@@ -148,13 +188,13 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-white mb-2">
             Job Description *
           </label>
           <textarea
             {...register('description', { required: 'Job description is required' })}
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+            className="bg-black w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
             placeholder="Describe your role, responsibilities, and key activities..."
           />
           {errors.description && (
@@ -164,13 +204,13 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
 
         <div>
           <div className="flex items-center justify-between mb-3">
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-white">
               Key Accomplishments
             </label>
             <button
               type="button"
               onClick={addAccomplishment}
-              className="flex items-center space-x-1 text-blue-600 hover:text-blue-700 text-sm"
+              className="flex items-center space-x-1 text-blue-400 hover:text-white-700 text-sm"
             >
               <Plus className="h-4 w-4" />
               <span>Add Accomplishment</span>
@@ -184,14 +224,14 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
                   type="text"
                   value={accomplishment}
                   onChange={(e) => updateAccomplishment(index, e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="bg-black flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="e.g., Increased team productivity by 25%"
                 />
                 {accomplishments.length > 1 && (
                   <button
                     type="button"
                     onClick={() => removeAccomplishment(index)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-2 text-red-600 hover:bg-red-500 hover:text-white rounded-lg transition-colors"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -199,7 +239,7 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
               </div>
             ))}
           </div>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-white">
             Add specific achievements, metrics, and impact you made in this role
           </p>
         </div>
@@ -208,7 +248,7 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 text-white border border-gray-300 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
           >
             Cancel
           </button>

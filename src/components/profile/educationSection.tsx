@@ -33,8 +33,8 @@ const EducationSection = () => {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Education</h2>
-          <p className="text-gray-600">Manage your educational background and qualifications</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">Education</h2>
+          <p className="text-muted-foreground">Manage your educational background and qualifications</p>
         </div>
         <button
           onClick={() => {
@@ -68,8 +68,8 @@ const EducationSection = () => {
       {/* Education List */}
       <div className="space-y-4">
         {profile.education.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            <GraduationCap className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+          <div className="text-center py-8 text-muted-foreground">
+            <GraduationCap className="h-12 w-12 mx-auto mb-4 text-white" />
             <p className="text-lg font-medium mb-2">No education entries yet</p>
             <p>Add your educational background to get started</p>
           </div>
@@ -80,18 +80,18 @@ const EducationSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+              className="bg-neutral-800 border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-2">
-                    <GraduationCap className="h-5 w-5 text-gray-400" />
-                    <h3 className="text-lg font-semibold text-gray-900">{education.school}</h3>
+                    <GraduationCap className="h-5 w-5 text-white" />
+                    <h3 className="text-lg font-semibold text-white">{education.school}</h3>
                   </div>
                   
-                  <p className="text-gray-700 font-medium mb-2">{education.degree}</p>
+                  <p className="text-white font-medium mb-2">{education.degree}</p>
                   
-                  <div className="flex items-center space-x-4 text-sm text-gray-600">
+                  <div className="flex items-center space-x-4 text-sm text-white">
                     <div className="flex items-center space-x-1">
                       <Calendar className="h-4 w-4" />
                       <span>{education.dates}</span>
@@ -107,13 +107,13 @@ const EducationSection = () => {
                 <div className="flex items-center space-x-2 ml-4">
                   <button
                     onClick={() => handleEdit(education)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    className="p-2 text-blue-600 hover:bg-blue-500 hover:text-white rounded-lg transition-colors"
                   >
                     <Edit className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(education.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-2 text-red-600 hover:bg-red-500 hover:text-white rounded-lg transition-colors"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -125,9 +125,9 @@ const EducationSection = () => {
       </div>
 
       {/* Tips */}
-      <div className="bg-purple-50 rounded-lg p-4">
-        <h4 className="font-semibold text-purple-900 mb-2">🎓 Education Tips:</h4>
-        <ul className="text-sm text-purple-800 space-y-1">
+      <div className="rounded-lg p-4 border border-blue-500">
+        <h4 className="font-semibold text-purple-500 mb-2">🎓 Education Tips:</h4>
+        <ul className="text-sm text-neutral-200 space-y-1">
           <li>• List education in reverse chronological order (most recent first)</li>
           <li>• Include relevant coursework, honors, or achievements</li>
           <li>• Add GPA if it&apos;s 3.5 or higher (or equivalent)</li>

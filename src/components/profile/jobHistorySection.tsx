@@ -39,8 +39,8 @@ const JobHistorySection = () => {
     >
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Job History</h2>
-          <p className="text-gray-600">Manage your work experience and professional background</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">Job History</h2>
+          <p className="text-muted-foreground">Manage your work experience and professional background</p>
         </div>
         <button
           onClick={() => {
@@ -74,7 +74,7 @@ const JobHistorySection = () => {
       {/* Job List */}
       <div className="space-y-4">
         {profile.jobHistory.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
+          <div className="text-center py-8 text-muted-foreground">
             <Building className="h-12 w-12 mx-auto mb-4 text-gray-300" />
             <p className="text-lg font-medium mb-2">No job history yet</p>
             <p>Add your first job experience to get started</p>
@@ -86,35 +86,35 @@ const JobHistorySection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+              className="bg-neutral-800 border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-2">
-                    <Building className="h-5 w-5 text-gray-400" />
-                    <h3 className="text-lg font-semibold text-gray-900">{job.company}</h3>
+                    <Building className="h-5 w-5 text-white" />
+                    <h3 className="text-lg font-semibold text-white">{job.company}</h3>
                   </div>
                   
                   <div className="flex items-center space-x-3 mb-2">
-                    <User className="h-4 w-4 text-gray-400" />
-                    <p className="text-gray-700 font-medium">{job.title}</p>
+                    <User className="h-4 w-4 text-white" />
+                    <p className="text-white font-medium">{job.title}</p>
                   </div>
                   
                   <div className="flex items-center space-x-3 mb-3">
-                    <Calendar className="h-4 w-4 text-gray-400" />
-                    <p className="text-sm text-gray-600">
+                    <Calendar className="h-4 w-4 text-white" />
+                    <p className="text-sm text-white">
                       {formatDate(job.startDate)} - {job.endDate ? formatDate(job.endDate) : 'Present'}
                     </p>
                   </div>
                   
-                  <p className="text-gray-700 mb-3">{job.description}</p>
+                  <p className="text-white mb-3">{job.description}</p>
                   
                   {job.accomplishments && job.accomplishments.length > 0 && (
                     <div>
-                      <h4 className="text-sm font-medium text-gray-900 mb-2">Key Accomplishments:</h4>
+                      <h4 className="text-sm font-medium text-white mb-2">Key Accomplishments:</h4>
                       <ul className="list-disc list-inside space-y-1">
                         {job.accomplishments.map((accomplishment, idx) => (
-                          <li key={idx} className="text-sm text-gray-600">{accomplishment}</li>
+                          <li key={idx} className="text-sm text-white">{accomplishment}</li>
                         ))}
                       </ul>
                     </div>
@@ -124,13 +124,13 @@ const JobHistorySection = () => {
                 <div className="flex items-center space-x-2 ml-4">
                   <button
                     onClick={() => handleEdit(job)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    className="p-2 text-blue-600 hover:bg-blue-500 hover:text-white rounded-lg transition-colors"
                   >
                     <Edit className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(job.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-2 text-red-600 hover:bg-red-500 hover:text-white rounded-lg transition-colors"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -142,9 +142,9 @@ const JobHistorySection = () => {
       </div>
 
       {/* Tips */}
-      <div className="bg-green-50 rounded-lg p-4">
-        <h4 className="font-semibold text-green-900 mb-2">💼 Job History Tips:</h4>
-        <ul className="text-sm text-green-800 space-y-1">
+      <div className="border border-blue-500 rounded-lg p-4">
+        <h4 className="font-semibold text-green-400 mb-3">💼 Job History Tips:</h4>
+        <ul className="text-sm text-neutral-200 space-y-1">
           <li>• List jobs in reverse chronological order (most recent first)</li>
           <li>• Include specific accomplishments with numbers when possible</li>
           <li>• Use action verbs to describe your responsibilities</li>
