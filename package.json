@@ -24,6 +24,7 @@
     "dommatrix": "^0.1.1",
     "firebase": "^11.9.1",
     "firebase-admin": "^13.4.0",
+    "framer-motion": "^12.19.2",
     "identity-obj-proxy": "^3.0.0",
     "lucide-react": "^0.488.0",
     "mammoth": "^1.9.1",

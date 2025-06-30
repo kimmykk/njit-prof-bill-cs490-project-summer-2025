@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { Target } from 'lucide-react';
@@ -14,21 +14,44 @@ interface ObjectiveForm {
 
 const CareerObjectiveSection = () => {
   const { profile, updateCareerObjective, markUnsaved } = useProfile();
-  
-  const { register, handleSubmit, formState: { errors } } = useForm<ObjectiveForm>({
+  const [text, setText] = useState(profile.careerObjective || '');
+  const [submittedOnce, setSubmittedOnce] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    clearErrors,
+    setError,
+    setValue
+  } = useForm<ObjectiveForm>({
     defaultValues: { careerObjective: profile.careerObjective }
   });
 
+  // Sync input text to form and clear error if valid
+  useEffect(() => {
+    setValue('careerObjective', text, { shouldValidate: true });
+    if (submittedOnce && text.length >= 50) {
+      clearErrors('careerObjective');
+    }
+  }, [text]);
+
   const onSubmit = (data: ObjectiveForm) => {
+    setSubmittedOnce(true);
+
+    if (text.length < 50) {
+      setError('careerObjective', {
+        type: 'manual',
+        message: 'Career objective should be at least 50 characters'
+      });
+      return;
+    }
+
     updateCareerObjective(data.careerObjective);
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="space-y-6"
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground mb-2">Career Objective</h2>
         <p className="text-muted-foreground">Define your professional goals and career aspirations</p>
@@ -40,22 +63,28 @@ const CareerObjectiveSection = () => {
           <div className="relative">
             <Target className="absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
             <Textarea
-              {...register('careerObjective', { 
-                required: 'Career objective is required',
-                minLength: {
-                  value: 50,
-                  message: 'Career objective should be at least 50 characters'
-                }
-              })}
+              {...register('careerObjective')}
               rows={6}
               className="pl-10 resize-none"
               placeholder="Describe your career goals, what you're looking for in your next role, and how you want to contribute to an organization..."
-              onChange={() => markUnsaved()}
+              value={text}
+              onChange={(e) => {
+                setText(e.target.value);
+                markUnsaved();
+              }}
             />
           </div>
-          {errors.careerObjective && (
-            <p className="text-sm text-destructive">{errors.careerObjective.message}</p>
-          )}
+
+          {/* Error + Character Counter */}
+          <div className="flex justify-between text-sm mt-1">
+            {submittedOnce && errors.careerObjective && (
+              <p className="text-destructive">{errors.careerObjective.message}</p>
+            )}
+            <p className={`ml-auto ${submittedOnce && text.length < 50 ? 'text-red-500' : 'text-muted-foreground'}`}>
+              {text.length}/50
+            </p>
+          </div>
+
           <p className="text-sm text-muted-foreground">
             Write a compelling statement that summarizes your professional goals and what you bring to potential employers.
           </p>

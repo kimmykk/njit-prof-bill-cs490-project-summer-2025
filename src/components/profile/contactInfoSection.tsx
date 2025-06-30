@@ -11,16 +11,46 @@ const ContactInfoSection = () => {
   const { profile, updateContactInfo, markUnsaved } = useProfile();
   const [showAdditionalEmails, setShowAdditionalEmails] = useState(false);
   const [showAdditionalPhones, setShowAdditionalPhones] = useState(false);
-  
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<ContactInfo>({
-    defaultValues: profile.contactInfo
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    watch,
+    setError,
+    clearErrors,
+  } = useForm<ContactInfo>({
+    defaultValues: profile.contactInfo,
   });
 
   const additionalEmails = watch('additionalEmails') || [];
   const additionalPhones = watch('additionalPhones') || [];
 
   const onSubmit = (data: ContactInfo) => {
-    updateContactInfo(data);
+    let valid = true;
+
+    if (!data.email) {
+      setError('email', { type: 'manual', message: 'Email is required' });
+      valid = false;
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(data.email)
+    ) {
+      setError('email', { type: 'manual', message: 'Invalid email address' });
+      valid = false;
+    }
+
+    if (!data.phone) {
+      setError('phone', { type: 'manual', message: 'Phone number is required' });
+      valid = false;
+    } else if (!/^[0-9()+\-.\s]{7,15}$/.test(data.phone)) {
+      setError('phone', { type: 'manual', message: 'Invalid phone number' });
+      valid = false;
+    }
+
+    if (valid) {
+      updateContactInfo(data);
+    }
   };
 
   const addAdditionalEmail = () => {
@@ -62,14 +92,12 @@ const ContactInfoSection = () => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="space-y-6"
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground mb-2">Contact Information</h2>
-        <p className="text-muted-foreground">Manage your contact details and communication preferences</p>
+        <p className="text-muted-foreground">
+          Manage your contact details and communication preferences
+        </p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -79,17 +107,14 @@ const ContactInfoSection = () => {
           <div className="relative">
             <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
-              {...register('email', { 
-                required: 'Email is required',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Invalid email address'
-                }
-              })}
+              {...register('email')}
               type="email"
               className="pl-10"
               placeholder="your.email@example.com"
-              onChange={() => markUnsaved()}
+              onChange={(e) => {
+                markUnsaved();
+                clearErrors('email'); // Always clear error on typing
+              }}
             />
           </div>
           {errors.email && (
@@ -110,7 +135,6 @@ const ContactInfoSection = () => {
               {showAdditionalEmails ? 'Hide' : 'Show'} Additional Emails
             </Button>
           </div>
-          
           {showAdditionalEmails && (
             <div className="space-y-2">
               {additionalEmails.map((email, index) => (
@@ -155,11 +179,14 @@ const ContactInfoSection = () => {
           <div className="relative">
             <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
-              {...register('phone', { required: 'Phone number is required' })}
+              {...register('phone')}
               type="tel"
               className="pl-10"
               placeholder="(555) 123-4567"
-              onChange={() => markUnsaved()}
+              onChange={(e) => {
+                markUnsaved();
+                clearErrors('phone'); // Always clear error on typing
+              }}
             />
           </div>
           {errors.phone && (
@@ -180,7 +207,6 @@ const ContactInfoSection = () => {
               {showAdditionalPhones ? 'Hide' : 'Show'} Additional Phones
             </Button>
           </div>
-          
           {showAdditionalPhones && (
             <div className="space-y-2">
               {additionalPhones.map((phone, index) => (
