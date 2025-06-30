@@ -1,0 +1,787 @@
+[33mcommit 36f16ea0a73ce4a10f191cbf6db97148756743cc[m[33m ([m[1;36mHEAD -> [m[1;32mSCRUM-25-Update-input-fields-on-contact-page[m[33m, [m[1;31morigin/SCRUM-25-Update-input-fields-on-contact-page[m[33m)[m
+Author: root <root@Mariano>
+Date:   Thu Jun 26 19:45:26 2025 -0400
+
+    Enhanced input validation & UX:
+    - Live character counter in Career Objective
+    - Regex validation for email & phone
+    - Auto error handling on input
+    - Animated collapsible profile menu in sidebar
+
+[33mcommit 81c751f10d9fc03a3d2868f2373b12a95512b846[m[33m ([m[1;31morigin/SCRUM-19-Create-Jobs-and-Education-pages[m[33m)[m
+Author: Kimora Stowe <kimorastowe@gmail.com>
+Date:   Thu Jun 26 17:04:20 2025 -0400
+
+    Add job and education section with tips
+
+[33mcommit 35d5b0dc6ca0fe5ece3dfa67486d47bea7628e3c[m
+Merge: c21612b e301d4c
+Author: gigabraended <varunsabbineni@gmail.com>
+Date:   Wed Jun 25 16:02:50 2025 -0400
+
+    Merge pull request #3 from kimmykk/SCRUM-18-Create-Contact-and-Objective-pages
+    
+    Added Contact and Objective pages, setup groundwork for other profile…
+
+[33mcommit e301d4c37002250267199844ca72b9f65e988b28[m[33m ([m[1;31morigin/SCRUM-18-Create-Contact-and-Objective-pages[m[33m)[m
+Author: DrnchedNGold <varunsabbineni@gmail.com>
+Date:   Wed Jun 25 16:00:27 2025 -0400
+
+    Added Contact and Objective pages, setup groundwork for other profile pages, and updated sidebar links
+
+[33mcommit c21612bfe4b3475f4c67aa06c61721ebb227d872[m
+Merge: 3335771 5428947
+Author: gigabraended <varunsabbineni@gmail.com>
+Date:   Wed Jun 25 11:22:58 2025 -0400
+
+    Merge pull request #2 from kimmykk/SCRUM-17-Create-shortcuts-for-each-profile-section-in-sidebar
+    
+    Added links to profile sections on sidebar.
+
+[33mcommit 54289472a9ae2493ffaa19f9b018eb71f7d06b43[m[33m ([m[1;31morigin/SCRUM-17-Create-shortcuts-for-each-profile-section-in-sidebar[m[33m)[m
+Author: llauraseb <sgl24@njit.edu>
+Date:   Wed Jun 25 11:07:34 2025 -0400
+
+    Added links to profile sections on sidebar.
+
+[33mcommit 3335771c813038d5d6bbb00dee884e4fa8f37b28[m
+Merge: 3201c92 0d7636b
+Author: gigabraended <varunsabbineni@gmail.com>
+Date:   Sat Jun 21 14:55:23 2025 -0400
+
+    Merge pull request #1 from DrnchedNGold/restart-from-upstream
+    
+    New_Site_Start
+
+[33mcommit 0d7636b8352331144bc4b987a7c095f5415f0f81[m
+Merge: a4a6195 3201c92
+Author: gigabraended <varunsabbineni@gmail.com>
+Date:   Sat Jun 21 14:55:10 2025 -0400
+
+    Merge branch 'main' into restart-from-upstream
+
+[33mcommit a4a619594a328248c9eab97b0ae008f6b7a2f81f[m
+Author: DrnchedNGold <varunsabbineni@gmail.com>
+Date:   Sat Jun 21 14:48:48 2025 -0400
+
+    Updated firebase npm version
+
+[33mcommit 71adc295a22fd165265dbed8e4cb98fbcdc6061f[m
+Author: DrnchedNGold <varunsabbineni@gmail.com>
+Date:   Sat Jun 21 14:33:14 2025 -0400
+
+    New upload/free-form text section
+
+[33mcommit 74e70a91e031ed870a11987016811d7c0fd0d17d[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Tue Jun 17 15:42:26 2025 -0400
+
+    Add sprint 1 and 2 PRDs
+
+[33mcommit 2334985a7f57524e7159808e32ae57632de0603a[m
+Author: Bill McCann <107727512+iambillmccann@users.noreply.github.com>
+Date:   Tue Jun 17 15:36:21 2025 -0400
+
+    Delete public/logo-removebg.png:Zone.Identifier
+
+[33mcommit 3201c92d888bf2e5e998db7a537b38601e120d3c[m
+Author: Kimora Stowe <kimorastowe@gmail.com>
+Date:   Tue Jun 10 20:06:53 2025 -0400
+
+    Testing push
+
+[33mcommit ffec14687ce8b42de7ea0ff40c98591a73ceb51c[m
+Author: Kimora Stowe <kimorastowe@gmail.com>
+Date:   Sat Jun 7 13:17:12 2025 -0400
+
+    Added project folders
+
+[33mcommit 689539d519f143c1b9fddd47f542c926366380da[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Mon Jun 2 20:14:25 2025 -0400
+
+    Update setup instructions
+
+[33mcommit a15ae8919e66cf3fee892dc156d5ab8998bbd7c7[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Sun Jun 1 16:19:10 2025 -0400
+
+    Update the manifest file
+
+[33mcommit a25e83d6e7124c00d0ce0b2ea74492e51616655b[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Sat May 31 15:09:46 2025 -0400
+
+    Set pwa setup
+
+[33mcommit 6d9d4970259cf93fe044d85e0f5378d4b947178f[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri May 30 12:03:04 2025 -0400
+
+    For now, I am giving up on sign-in
+
+[33mcommit 7ff5f337b8ed52a2146d55fe6c5d8f258d382993[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri May 30 11:18:29 2025 -0400
+
+    Update the tests for correct failure
+
+[33mcommit 025c25f1bf3462db82a070c91bc7394a83dde039[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri May 30 09:50:31 2025 -0400
+
+    Trying to complete the test suite
+
+[33mcommit 4dec9aaf4603b6880f99e6363acd3a99d11b38aa[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu May 29 09:13:02 2025 -0400
+
+    Tests for the settings page.
+
+[33mcommit 58eb09862885212dd53d6fbb959919378ce9e8b2[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu May 29 09:08:43 2025 -0400
+
+    Add more tests
+
+[33mcommit 867b265b3484a32517e62c9721d4650f9bbae5e1[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu May 29 08:51:20 2025 -0400
+
+    Add tests for the main layout
+
+[33mcommit e93960bfb64f4baf53bd32acfa6ce637f4345519[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed May 28 17:12:37 2025 -0400
+
+    Add tests for the landing page
+
+[33mcommit cd02060c44f83fdb494b440fc107a58489f205a9[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed May 28 16:52:17 2025 -0400
+
+    Add first successful test
+
+[33mcommit d70ee54497a25a8fb181cc89a3fc943be3236348[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed May 28 15:12:26 2025 -0400
+
+    Update the test suite
+
+[33mcommit a7c6b18e3113142cf2c1d3f2108f0d3dff456049[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed May 28 14:23:13 2025 -0400
+
+    Add testing infrastructure
+
+[33mcommit 463246ecf4f5dfc622a98f88e283f71472cbba2b[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Mon May 26 17:05:27 2025 -0400
+
+    Recovered changes after fixing repo corruption
+
+[33mcommit df821d3210fffbe8badd46b4b45ac9cf40a1a9c2[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri May 23 09:54:14 2025 -0400
+
+    Improve error handling
+
+[33mcommit 965ede792e5f9403b5a1a63a21a4c593ee1ebd8e[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu May 22 11:42:48 2025 -0400
+
+    Finish password change
+
+[33mcommit 0d4e14a3eb1d4206cc1f8b51dfd7e08e375c76dc[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu May 22 10:52:14 2025 -0400
+
+    Use Shadcn for settings
+
+[33mcommit b1fedfc78d4dccfc6756772d9a12526469cebba0[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed May 21 15:23:10 2025 -0400
+
+    Disable oauth password change
+
+[33mcommit e048f09b32a3505b1d8d4446bb894c9818ae4a4a[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed May 21 15:14:26 2025 -0400
+
+    Add toast
+
+[33mcommit fe547e9a346ff89ca02c64cb8256bfd21cd1523c[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed May 21 15:05:44 2025 -0400
+
+    Change color of the avatar
+
+[33mcommit 27aac1ad9817443c9f3ebf61faf95bab294a8365[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed May 21 14:57:04 2025 -0400
+
+    make avatar lowercase
+
+[33mcommit 90680eaeed8f500f13d874dfb848fc2eb422a98d[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed May 21 14:53:16 2025 -0400
+
+    Put initials in avatar
+
+[33mcommit 035c2b59d1124676d9cfae263694c5cb53f23a95[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Mon May 19 08:50:53 2025 -0400
+
+    First attempt at new user fix
+
+[33mcommit 296f53bc238211cc4e99e305fba6b8693e8c193a[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri May 16 14:19:05 2025 -0400
+
+    Sortof have new users working
+
+[33mcommit 92e1787c15205087d7026862ead141632663d1ee[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu May 15 04:21:58 2025 -0400
+
+    Save settings to the database
+
+[33mcommit bb5e0567545f15171e2dee84c2847dda971b1f04[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu May 15 04:01:36 2025 -0400
+
+    Start adding in Firestore
+
+[33mcommit 70df8a6c65700accb31022ce13cb51e639eb1598[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed May 14 13:18:33 2025 -0400
+
+    Disable modifying the email address
+
+[33mcommit 48980946fd94d518e90bcb45743520770ac8d3fe[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Tue May 13 11:38:18 2025 -0400
+
+    Modify buttons on the form
+
+[33mcommit 3889c0ebe841c0775213c826237366364a147bc2[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Tue May 13 11:08:19 2025 -0400
+
+    Update name (with button)
+
+[33mcommit 0896a4c219c423da261f3d78383819468c29ae00[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Tue May 13 09:52:26 2025 -0400
+
+    Pull in name and email
+
+[33mcommit 921b8f657869206934a248079c12378df2f193c8[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Tue May 13 08:44:22 2025 -0400
+
+    Remove debugging logging
+
+[33mcommit 09367b3b7fdbd3952b032e03e1f7577e85a72f84[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Mon May 12 15:34:20 2025 -0400
+
+    Respect local and device settings
+
+[33mcommit 39c6e7c494f54c9d0e70b735a0091d09b0c18477[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Mon May 12 12:02:50 2025 -0400
+
+    First cut at supporting themes in settings
+
+[33mcommit 9851487ea0865e6df3aaf5a2e0e554f1673e61be[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri May 9 11:45:58 2025 -0400
+
+    Add page title to the top banner
+
+[33mcommit 1046f7f55e8bc83174ccefe4d997be3e2affde55[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri May 9 11:17:22 2025 -0400
+
+    UI for the settings page
+
+[33mcommit 4b8a359dda1c28d47bdff2d16bac555f4e0d711b[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri May 9 10:35:17 2025 -0400
+
+    Add Shadcn components for settings
+
+[33mcommit ac081cee4928fd8a2a93e7226feb3fc970171675[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu May 8 11:48:57 2025 -0400
+
+    Clean up unused code
+
+[33mcommit b5d0019ea9546df0b9f213f6ce28a87d817483d6[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed May 7 10:24:14 2025 -0400
+
+    Put personal menu on the avatar
+
+[33mcommit 2798218ffe85b98e990acb4e840492775b3c1a53[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Tue May 6 09:54:17 2025 -0400
+
+    Add a placeholder for the settings page
+
+[33mcommit fb5f31411a8923c93d51616590337f037a2d2371[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Tue May 6 09:20:34 2025 -0400
+
+    Final landing page branding
+
+[33mcommit d707419a779a2e1c82bfecf985f827520338b946[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Tue May 6 09:06:31 2025 -0400
+
+    App branding ... starting point?
+
+[33mcommit 0792af8f55b62e65071e2af67b6b63bd9c727b25[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Mon May 5 21:22:05 2025 -0400
+
+    Branding v1
+
+[33mcommit 2242bfe6520788d0ffff360f255f7e3e52529eca[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Mon May 5 21:08:15 2025 -0400
+
+    Move the logo
+
+[33mcommit b58b20da5f57b568b2d82cce5b912d62ad1deb75[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Mon May 5 20:47:28 2025 -0400
+
+    Branding update
+
+[33mcommit d580565b43010253ed6e7f3ad7365096eb53728c[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Mon May 5 20:28:20 2025 -0400
+
+    Back out the branding changes
+
+[33mcommit 3b051ef61ca5e519e0a30f8fff81042a128638c7[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Mon May 5 20:27:45 2025 -0400
+
+    Add branding
+
+[33mcommit a20f2b5c35c68f759c71b54c4a87fe3a7aa95cb1[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Sun May 4 09:09:32 2025 -0400
+
+    Remove test scaffold
+
+[33mcommit 2fd1635e7800e1def710f436916f9bc19cdded0b[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri May 2 19:35:15 2025 -0400
+
+    Finish the reset form
+
+[33mcommit fec11d8399fb6c1895fdd0b2abe47c08a9ab8ac1[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri May 2 18:01:51 2025 -0400
+
+    Update reset appearance
+
+[33mcommit ae68da02cae84833c19227daac29f966e39f6fe1[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri May 2 15:25:08 2025 -0400
+
+    Test the reset password form
+
+[33mcommit 8a5aa728681af017c28cc6b668fda8f15104ca05[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri May 2 14:46:15 2025 -0400
+
+    Initial password reset form
+
+[33mcommit 5f2efd5290b4668a27a11b160a1044bfdabff3a4[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri May 2 13:11:06 2025 -0400
+
+    Add forgot password link
+
+[33mcommit 2e813d4a6c4d44984060ee97c2e0c17a2f6ea675[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu May 1 16:33:36 2025 -0400
+
+    Update gitignore
+
+[33mcommit 0bb6c39a99ae046bd24ce1edfe24f54d19ca374f[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu May 1 16:14:28 2025 -0400
+
+    Update gitignore
+
+[33mcommit a85ee6c503ca6ed469a6f5fe57da52abb9ea2b8b[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu May 1 16:14:26 2025 -0400
+
+    Update gitignore
+
+[33mcommit 949df3fd8d54a51cadca5db5a64728aa3bb09dd2[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Sat Apr 26 08:03:46 2025 -0400
+
+    Adjust the avatar
+
+[33mcommit 9555e013325774a8d92c3022c27d04d898a394c5[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Sat Apr 26 07:55:17 2025 -0400
+
+    Initial default avatar
+
+[33mcommit 13ee49a238c71c7d35fe9eb62ad6ac584d598785[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Sat Apr 26 07:46:37 2025 -0400
+
+    Add a page title to the banner
+
+[33mcommit fc239629de95bc50be2f2b479cdf854771002ab1[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 25 16:29:55 2025 -0400
+
+    Add metadata
+
+[33mcommit 930f35721807f2cde83d4037db0063d7176fe194[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 25 14:40:17 2025 -0400
+
+    Change the favicon and title text
+
+[33mcommit ae40d1ac1245d15462f551e98d1914f344e8566f[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 25 14:10:32 2025 -0400
+
+    Adjust the logo (which still sucks)
+
+[33mcommit aa2204007dc5025fb7bfc7d9fb9a338c0c83a460[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 25 13:30:36 2025 -0400
+
+    Minor styling changes
+
+[33mcommit 635e25c316aa564ffa3db8ace37c9a2331942398[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 25 12:45:48 2025 -0400
+
+    Make a component for the side panel
+
+[33mcommit 17749ebd52a6d3dc0405903a47664f4d05aa1a6d[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 25 12:37:12 2025 -0400
+
+    Make banner a component
+
+[33mcommit 6cefdeb48ae8cccbee54350e84edcd4749078f56[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 25 12:25:58 2025 -0400
+
+    Add a logo
+
+[33mcommit 9c4d1d13abd83b647880022de38f72e5b5c48e53[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 25 09:22:51 2025 -0400
+
+    Show/hide the side panel
+
+[33mcommit d37143f946ca5f0ab818ac731dd46b57cdb099d3[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu Apr 24 20:50:40 2025 -0400
+
+    Add a border to the top banner
+
+[33mcommit a17d07b50cb583768a1d28cd5f3504536c1bd059[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu Apr 24 17:19:39 2025 -0400
+
+    Finish Google oauth and styling
+
+[33mcommit 5cf0a398853f7c1902b7907a838b24e4decf5c9c[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu Apr 24 17:10:35 2025 -0400
+
+    Restyle the forms
+
+[33mcommit db363fcfbd2c1f8533a4086aa9ee425163f9be53[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu Apr 24 16:35:46 2025 -0400
+
+    Add Google Oauth to the registration form
+
+[33mcommit 7fc0334e5b10816287eea6d23ed83ce717642d74[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu Apr 24 16:19:33 2025 -0400
+
+    Style the Google button
+
+[33mcommit ebe9624f42d452f6285943ae0d62491ef3ec193d[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu Apr 24 15:58:59 2025 -0400
+
+    Add Google for log-in
+
+[33mcommit 6c2a6a7dd3cfd413a682757ab4b87cf55481902b[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 23 17:23:28 2025 -0400
+
+    Finish verification
+
+[33mcommit e59823b5c95330638990d829039b6c195ee13ba9[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 23 17:14:22 2025 -0400
+
+    Fix the resend link
+
+[33mcommit 0a30cd0dfebe26f8e1f70d2810c8f39183f97b20[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 23 16:51:14 2025 -0400
+
+    Check for verified email
+
+[33mcommit a608b282e8c01f1dda9bc3d52dc78fc139251d48[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 23 16:07:04 2025 -0400
+
+    Route sign-ups back to login form
+
+[33mcommit aebb0fc77fd79b3cef7d759be1e4ee8d6bb36eb4[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 23 09:30:36 2025 -0400
+
+    Get toast messages working
+
+[33mcommit 2a7fb33a16505670849480c67ca8c7cb70206e60[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Tue Apr 22 07:14:13 2025 -0400
+
+    Add support for email verification
+
+[33mcommit 69e6cad2dc9ecbb380074bed068983f94cadb33c[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Mon Apr 21 08:59:13 2025 -0400
+
+    Add email support (not tested)
+
+[33mcommit 6edf5d8ef3e0f2beb67d0af999525504afe75cc2[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Sun Apr 20 11:43:01 2025 -0400
+
+    Start work on verification; the build is broken
+
+[33mcommit 7372fafad84f2195c6b2aee0c6eddd428aaac329[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 18 10:20:08 2025 -0400
+
+    Restructure project (Step 2)
+
+[33mcommit 42367b47e663acb0e0867e84a7fdda6d735b78ad[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 18 10:06:55 2025 -0400
+
+    Change styling on main page
+
+[33mcommit 488f311b486ab75a804997f22f7b74265368b2b5[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 18 10:04:08 2025 -0400
+
+    Add back password show/hide
+
+[33mcommit 42473d7574690cbc8caaa7881696632415c7b621[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 18 09:59:46 2025 -0400
+
+    Links to login or register
+
+[33mcommit db0a2534e743ad98a2d5f294e1f1198260fda3b9[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 18 09:31:38 2025 -0400
+
+    Restructure project (step 1)
+
+[33mcommit 520ca1feb8efe80f792c37384b8d2bc41a997abe[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu Apr 17 17:48:57 2025 -0400
+
+    Add routing and authentication context
+
+[33mcommit a5d423cd1191d009813e2777ee9533aed643855b[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu Apr 17 16:34:54 2025 -0400
+
+    Add error handling to the loginForm
+
+[33mcommit ae909f06e8e7098251ec0176ade97baba4db63ce[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu Apr 17 15:49:31 2025 -0400
+
+    Fix Firebase error messages
+
+[33mcommit 5e9b40bf42c5a9bf3ee84b8312295300a0469dbc[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu Apr 17 11:42:44 2025 -0400
+
+    Improve error feedback
+
+[33mcommit 199ba138d4acb44fff5d9cfa7726b30f8c0933e0[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 16 13:20:52 2025 -0400
+
+    Fix syntax issue with a declaration
+
+[33mcommit ccf2386e0ce47d6273f5e6d7dbbeeb337b3446c8[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 16 13:05:21 2025 -0400
+
+    Support the confirmation password
+
+[33mcommit a1587495afbfdf6f0bf1538bcc4fec7c739dcc7c[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 16 12:00:43 2025 -0400
+
+    Swap the login form's card for a Form.
+
+[33mcommit d7c4c977e10126769b6c6a2a099ee77f76cf08cb[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 16 10:58:57 2025 -0400
+
+    Resolve syntax errors
+
+[33mcommit d6a480f535683eba25a920318cdc8ec5da30b30c[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 16 10:51:42 2025 -0400
+
+    Make login work!
+
+[33mcommit 6ca3e7df3c9783dee932492e8c522564e1031ed7[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 16 10:48:19 2025 -0400
+
+    Add a loginForm
+
+[33mcommit 4395b685e011df3a457dd0843107af2b6a5beefc[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 16 10:31:43 2025 -0400
+
+    Add Firebase
+
+[33mcommit 93dcef7258b228fd7c0acb6d7ea5d9a2425b83c7[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 16 09:51:33 2025 -0400
+
+    Finish  dark mode support
+
+[33mcommit 053dd323770ebd72c94d60996dec81f82eefcdb1[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 16 09:35:39 2025 -0400
+
+    Support system settings for light and dark
+
+[33mcommit d370fddaae88ce847923346142d3a33b8dde4420[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 16 09:28:41 2025 -0400
+
+    Add support for a dark theme
+
+[33mcommit 04b3bc49966e906b92c43564051ab43491d9d993[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 16 09:16:10 2025 -0400
+
+    Add a Tailwind configuration file
+
+[33mcommit cd5ff5580f47a905c5e1a696d365c158671e0167[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 16 09:04:32 2025 -0400
+
+    Support and test Shadcn
+
+[33mcommit 75ff5ce8f0b3614943987a8496d5bdabe76e4b20[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Tue Apr 15 15:23:56 2025 -0400
+
+    Starting over
+
+[33mcommit 812eedf28f496270d9959697de23f9decea23670[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Tue Apr 15 13:43:38 2025 -0400
+
+    Bombed the project to start over
+
+[33mcommit 1c88734d67e3355b98b6fe16bc35cc543b6ea6fd[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Tue Apr 15 11:34:19 2025 -0400
+
+    Troubleshooting Tailwind
+
+[33mcommit 768bf27c1c32f91d5ae7175594b826d9842a8b52[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Mon Apr 14 17:34:51 2025 -0400
+
+    Add logout; fix Tailwind
+
+[33mcommit 6cac41690c744e032ed43ed7064afc246b4b9218[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Mon Apr 14 10:18:58 2025 -0400
+
+    Add a home apge
+
+[33mcommit 698b20e38ac3b5adcb2c2eb31a3124c6337eb753[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Mon Apr 14 09:06:16 2025 -0400
+
+    Initial authentication code (with errors)
+
+[33mcommit 8f4f198cb736725ca475c518a9d0d87d5a3f8743[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Sun Apr 13 11:11:50 2025 -0400
+
+    Add LoginForm component
+
+[33mcommit 7dc1a41d082ab3e26d1f2e57f6190d0203f95c76[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Sat Apr 12 07:45:18 2025 -0400
+
+    First attempt at a login form
+
+[33mcommit 163ae499a3ca8a01cdaefe567e36e5e8ac96980e[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 11 14:31:17 2025 -0400
+
+    Initial app with test page
+
+[33mcommit 7b31c20f090c4a82d8c8525da8a9570f4ac655d5[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Fri Apr 11 12:42:39 2025 -0400
+
+    NextJS, Tailwind, Shadcn, Firebase
+
+[33mcommit ce4e61a4cd0dfd171db783b9deecd1438161382f[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu Apr 10 20:47:52 2025 -0400
+
+    Setup Tailwind
+
+[33mcommit 6a5157e8f5d1aa13abb27ced260666b16d546e7b[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Thu Apr 10 09:02:30 2025 -0400
+
+    Initial project setup
+
+[33mcommit 3fe7613746b8bbe3fba6789d76636cc9d09c2da2[m
+Author: Bill McCann <bill.mccann@gmail.com>
+Date:   Wed Apr 9 20:48:55 2025 -0400
+
+    prepare to create nextjs project
+
+[33mcommit a1f01da960da54ac7eed3c59483122c53e596e7b[m
+Author: Bill McCann <107727512+iambillmccann@users.noreply.github.com>
+Date:   Wed Apr 9 20:24:33 2025 -0400
+
+    Initial commit
