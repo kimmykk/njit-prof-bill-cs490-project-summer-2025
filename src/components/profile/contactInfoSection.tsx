@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { Mail, Phone, Plus, X } from 'lucide-react';
@@ -21,33 +21,29 @@ const ContactInfoSection = () => {
     setError,
     clearErrors,
   } = useForm<ContactInfo>({
-    defaultValues: profile.contactInfo
+    defaultValues: profile.contactInfo,
   });
 
-  const email = watch('email');
-  const phone = watch('phone');
   const additionalEmails = watch('additionalEmails') || [];
   const additionalPhones = watch('additionalPhones') || [];
-
-  // ✅ Live validation for email and phone
-  useEffect(() => {
-    if (email && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
-      clearErrors('email');
-    }
-    if (phone && /^[0-9()+\-.\s]{7,15}$/.test(phone)) {
-      clearErrors('phone');
-    }
-  }, [email, phone]);
 
   const onSubmit = (data: ContactInfo) => {
     let valid = true;
 
-    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(data.email)) {
+    if (!data.email) {
+      setError('email', { type: 'manual', message: 'Email is required' });
+      valid = false;
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(data.email)
+    ) {
       setError('email', { type: 'manual', message: 'Invalid email address' });
       valid = false;
     }
 
-    if (!/^[0-9()+\-.\s]{7,15}$/.test(data.phone)) {
+    if (!data.phone) {
+      setError('phone', { type: 'manual', message: 'Phone number is required' });
+      valid = false;
+    } else if (!/^[0-9()+\-.\s]{7,15}$/.test(data.phone)) {
       setError('phone', { type: 'manual', message: 'Invalid phone number' });
       valid = false;
     }
@@ -99,7 +95,9 @@ const ContactInfoSection = () => {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground mb-2">Contact Information</h2>
-        <p className="text-muted-foreground">Manage your contact details and communication preferences</p>
+        <p className="text-muted-foreground">
+          Manage your contact details and communication preferences
+        </p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -109,27 +107,31 @@ const ContactInfoSection = () => {
           <div className="relative">
             <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
-              {...register('email', {
-                required: 'Email is required',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Invalid email address'
-                }
-              })}
+              {...register('email')}
               type="email"
               className="pl-10"
               placeholder="your.email@example.com"
-              onChange={() => markUnsaved()}
+              onChange={(e) => {
+                markUnsaved();
+                clearErrors('email'); // Always clear error on typing
+              }}
             />
           </div>
-          {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+          {errors.email && (
+            <p className="text-sm text-destructive">{errors.email.message}</p>
+          )}
         </div>
 
         {/* Additional Emails */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label>Additional Email Addresses</Label>
-            <Button type="button" variant="ghost" size="sm" onClick={() => setShowAdditionalEmails(!showAdditionalEmails)}>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowAdditionalEmails(!showAdditionalEmails)}
+            >
               {showAdditionalEmails ? 'Hide' : 'Show'} Additional Emails
             </Button>
           </div>
@@ -158,7 +160,12 @@ const ContactInfoSection = () => {
                   </Button>
                 </div>
               ))}
-              <Button type="button" variant="outline" size="sm" onClick={addAdditionalEmail}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addAdditionalEmail}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Email
               </Button>
@@ -172,27 +179,31 @@ const ContactInfoSection = () => {
           <div className="relative">
             <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
-              {...register('phone', {
-                required: 'Phone number is required',
-                pattern: {
-                  value: /^[0-9()+\-.\s]{7,15}$/,
-                  message: 'Invalid phone number'
-                }
-              })}
+              {...register('phone')}
               type="tel"
               className="pl-10"
               placeholder="(555) 123-4567"
-              onChange={() => markUnsaved()}
+              onChange={(e) => {
+                markUnsaved();
+                clearErrors('phone'); // Always clear error on typing
+              }}
             />
           </div>
-          {errors.phone && <p className="text-sm text-destructive">{errors.phone.message}</p>}
+          {errors.phone && (
+            <p className="text-sm text-destructive">{errors.phone.message}</p>
+          )}
         </div>
 
         {/* Additional Phones */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label>Additional Phone Numbers</Label>
-            <Button type="button" variant="ghost" size="sm" onClick={() => setShowAdditionalPhones(!showAdditionalPhones)}>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowAdditionalPhones(!showAdditionalPhones)}
+            >
               {showAdditionalPhones ? 'Hide' : 'Show'} Additional Phones
             </Button>
           </div>
@@ -221,7 +232,12 @@ const ContactInfoSection = () => {
                   </Button>
                 </div>
               ))}
-              <Button type="button" variant="outline" size="sm" onClick={addAdditionalPhone}>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addAdditionalPhone}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Phone
               </Button>
