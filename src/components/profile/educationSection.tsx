@@ -1,21 +1,36 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Edit, Trash2, GraduationCap, Calendar } from 'lucide-react';
-import { useProfile, EducationEntry } from '@/context/profileContext';
-import EducationEntryForm from './educationEntryForm';
+// src/components/profile/educationSection.tsx
+"use client";
 
-const EducationSection = () => {
-  const { profile, deleteEducationEntry } = useProfile();
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  GraduationCap,
+  Calendar,
+} from "lucide-react";
+import { useProfile, EducationEntry } from "@/context/profileContext";
+import EducationEntryForm from "./educationEntryForm";
+
+const EducationSection: React.FC = () => {
+  const { activeProfile, deleteEducationEntry } = useProfile();
   const [editingEducation, setEditingEducation] = useState<EducationEntry | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
+  // Close any open form when switching profiles
+  useEffect(() => {
+    setEditingEducation(null);
+    setShowAddForm(false);
+  }, [activeProfile]);
+
   const handleEdit = (education: EducationEntry) => {
     setEditingEducation(education);
-    setShowAddForm(false);
+    setShowAddForm(true);
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this education entry?')) {
+    if (window.confirm("Are you sure you want to delete this education entry?")) {
       deleteEducationEntry(id);
     }
   };
@@ -31,15 +46,20 @@ const EducationSection = () => {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
+      {/* Header + Add Button */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">Education</h2>
-          <p className="text-muted-foreground">Manage your educational background and qualifications</p>
+          <h2 className="text-2xl font-bold text-foreground mb-2">
+            Education
+          </h2>
+          <p className="text-muted-foreground">
+            Manage your educational background and qualifications
+          </p>
         </div>
         <button
           onClick={() => {
-            setShowAddForm(true);
             setEditingEducation(null);
+            setShowAddForm(true);
           }}
           className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
@@ -48,12 +68,12 @@ const EducationSection = () => {
         </button>
       </div>
 
-      {/* Add/Edit Form */}
+      {/* Add / Edit Form */}
       <AnimatePresence>
         {(showAddForm || editingEducation) && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
@@ -67,14 +87,14 @@ const EducationSection = () => {
 
       {/* Education List */}
       <div className="space-y-4">
-        {profile.education.length === 0 ? (
+        {activeProfile.education.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <GraduationCap className="h-12 w-12 mx-auto mb-4 text-white" />
             <p className="text-lg font-medium mb-2">No education entries yet</p>
             <p>Add your educational background to get started</p>
           </div>
         ) : (
-          profile.education.map((education, index) => (
+          activeProfile.education.map((education, index) => (
             <motion.div
               key={education.id}
               initial={{ opacity: 0, y: 20 }}
@@ -86,11 +106,15 @@ const EducationSection = () => {
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-2">
                     <GraduationCap className="h-5 w-5 text-white" />
-                    <h3 className="text-lg font-semibold text-white">{education.school}</h3>
+                    <h3 className="text-lg font-semibold text-white">
+                      {education.school}
+                    </h3>
                   </div>
-                  
-                  <p className="text-white font-medium mb-2">{education.degree}</p>
-                  
+
+                  <p className="text-white font-medium mb-2">
+                    {education.degree}
+                  </p>
+
                   <div className="flex items-center space-x-4 text-sm text-white">
                     <div className="flex items-center space-x-1">
                       <Calendar className="h-4 w-4" />
@@ -103,7 +127,7 @@ const EducationSection = () => {
                     )}
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-2 ml-4">
                   <button
                     onClick={() => handleEdit(education)}
@@ -130,9 +154,9 @@ const EducationSection = () => {
         <ul className="text-sm text-neutral-200 space-y-1">
           <li>• List education in reverse chronological order (most recent first)</li>
           <li>• Include relevant coursework, honors, or achievements</li>
-          <li>• Add GPA if it&apos;s 3.5 or higher (or equivalent)</li>
+          <li>• Add GPA if it’s 3.5 or higher (or equivalent)</li>
           <li>• Include certifications, bootcamps, and professional development</li>
-          <li>• Don&apos;t forget about relevant online courses or training</li>
+          <li>• Don’t forget relevant online courses or training</li>
         </ul>
       </div>
     </motion.div>
