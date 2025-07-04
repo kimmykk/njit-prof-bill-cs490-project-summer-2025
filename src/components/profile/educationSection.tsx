@@ -40,6 +40,12 @@ const EducationSection: React.FC = () => {
     setShowAddForm(false);
   };
 
+  const formatYear = (str: string) => {
+    if (!str || str.toLowerCase().includes("present")) return "Present";
+    const d = new Date(str);
+    return isNaN(d.getTime()) ? str : d.getFullYear().toString();
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -94,57 +100,61 @@ const EducationSection: React.FC = () => {
             <p>Add your educational background to get started</p>
           </div>
         ) : (
-          activeProfile.education.map((education, index) => (
-            <motion.div
-              key={education.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-neutral-800 border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <GraduationCap className="h-5 w-5 text-white" />
-                    <h3 className="text-lg font-semibold text-white">
-                      {education.school}
-                    </h3>
-                  </div>
+          activeProfile.education.map((education, index) => {
+            const [start, end] = education.dates.split(/[-–]/).map((s) => s.trim());
 
-                  <p className="text-white font-medium mb-2">
-                    {education.degree}
-                  </p>
-
-                  <div className="flex items-center space-x-4 text-sm text-white">
-                    <div className="flex items-center space-x-1">
-                      <Calendar className="h-4 w-4" />
-                      <span>{education.dates}</span>
+            return (
+              <motion.div
+                key={education.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-neutral-800 border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <GraduationCap className="h-5 w-5 text-white" />
+                      <h3 className="text-lg font-semibold text-white">
+                        {education.school}
+                      </h3>
                     </div>
-                    {education.gpa && (
-                      <div>
-                        <span className="font-medium">GPA: {education.gpa}</span>
+
+                    <p className="text-white font-medium mb-2">
+                      {education.degree}
+                    </p>
+
+                    <div className="flex items-center justify-between text-sm text-white">
+                      <div className="flex items-center space-x-1">
+                        <Calendar className="h-4 w-4" />
+                        <span>{formatYear(start)} – {formatYear(end)}</span>
                       </div>
-                    )}
+                      {education.gpa && (
+                        <div>
+                          <span className="font-medium">GPA: {education.gpa}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2 ml-4">
+                    <button
+                      onClick={() => handleEdit(education)}
+                      className="p-2 text-blue-600 hover:bg-blue-500 hover:text-white rounded-lg transition-colors"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(education.id)}
+                      className="p-2 text-red-600 hover:bg-red-500 hover:text-white rounded-lg transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
                   </div>
                 </div>
-
-                <div className="flex items-center space-x-2 ml-4">
-                  <button
-                    onClick={() => handleEdit(education)}
-                    className="p-2 text-blue-600 hover:bg-blue-500 hover:text-white rounded-lg transition-colors"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(education.id)}
-                    className="p-2 text-red-600 hover:bg-red-500 hover:text-white rounded-lg transition-colors"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          ))
+              </motion.div>
+            );
+          })
         )}
       </div>
 
@@ -163,4 +173,10 @@ const EducationSection: React.FC = () => {
   );
 };
 
-export default EducationSection;
+export default EducationSection; export interface EducationFormData {
+  school: string;
+  degree: string;
+  dates: string;
+  gpa?: string;
+}
+

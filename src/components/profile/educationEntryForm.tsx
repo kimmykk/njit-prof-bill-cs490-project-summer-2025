@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { Save, X } from 'lucide-react';
 import { useProfile, EducationEntry } from '@/context/profileContext';
+import { useState } from "react";
 
 interface EducationEntryFormProps {
   education?: EducationEntry | null;
@@ -18,6 +19,7 @@ interface EducationFormData {
 
 const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onClose }) => {
   const { addEducationEntry, updateEducationEntry } = useProfile();
+  const [isPresent, setIsPresent] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<EducationFormData>({
     defaultValues: {
@@ -29,11 +31,27 @@ const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onCl
   });
 
   const onSubmit = (data: EducationFormData) => {
-    if (education) {
-      updateEducationEntry(education.id, data);
-    } else {
-      addEducationEntry(data);
+    let startDate = "";
+    let endDate = "";
+
+    if (data.dates) {
+      const parts = data.dates.split(/[-–]/);
+      if (parts.length >= 1) startDate = parts[0].trim();
+      if (parts.length >= 2) endDate = parts[1].trim();
     }
+
+    const entry = {
+      ...data,
+      startDate,
+      endDate,
+    };
+
+    if (education) {
+      updateEducationEntry(education.id, entry);
+    } else {
+      addEducationEntry(entry);
+    }
+
     onClose();
   };
 
@@ -95,7 +113,7 @@ const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onCl
               {...register('dates', { required: 'Dates are required' })}
               type="text"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="e.g., 2018-2022 or Sep 2018 - May 2022"
+              placeholder="e.g., 2018-2022"
             />
             {errors.dates && (
               <p className="mt-1 text-sm text-red-600">{errors.dates.message}</p>

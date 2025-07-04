@@ -42,12 +42,14 @@ const JobHistorySection: React.FC = () => {
   };
 
   const formatDate = (dateString: string) => {
-    if (!dateString) return "";
+    if (!dateString || dateString === "Present") return "Present";
     const d = new Date(dateString);
-    return d.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-    });
+    return isNaN(d.getTime())
+      ? "Invalid Date"
+      : d.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+      });
   };
 
   return (
@@ -127,7 +129,8 @@ const JobHistorySection: React.FC = () => {
                     <Calendar className="h-4 w-4 text-white" />
                     <p className="text-sm text-white">
                       {formatDate(job.startDate)} –{" "}
-                      {job.endDate ? formatDate(job.endDate) : "Present"}
+                      {job.endDate === "Present" || !job.endDate
+                        ? "Present" : formatDate(job.endDate)}
                     </p>
                   </div>
 
