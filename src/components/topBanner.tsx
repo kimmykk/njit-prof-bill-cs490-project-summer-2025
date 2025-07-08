@@ -66,7 +66,7 @@ export default function TopBanner({ toggleSidePanel }: TopBannerProps) {
                 <Link href="/" className="flex items-center">
                     <Image
                         src="/logo.png"
-                        alt="Marcus Home"
+                        alt="Team Kaizo Resume Generator"
                         width={48}
                         height={48}
                         className="mr-2"
