@@ -43,7 +43,7 @@ const JobHistorySection: React.FC = () => {
 
   const formatDate = (dateString: string) => {
     if (!dateString || dateString === "Present") return "Present";
-    const d = new Date(dateString);
+    const d = new Date(`${dateString} 01`);
     return isNaN(d.getTime())
       ? "Invalid Date"
       : d.toLocaleDateString("en-US", {

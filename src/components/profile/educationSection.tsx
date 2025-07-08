@@ -41,9 +41,19 @@ const EducationSection: React.FC = () => {
   };
 
   const formatYear = (str: string) => {
-    if (!str || str.toLowerCase().includes("present")) return "Present";
-    const d = new Date(str);
-    return isNaN(d.getTime()) ? str : d.getFullYear().toString();
+    let year: number | string = "Invalid";
+
+    try {
+      const d = typeof str === "string"
+        ? new Date(`${str}-01-01T00:00:00Z`)
+        : new Date(str);
+
+      year = !isNaN(d.getTime()) ? d.getUTCFullYear() : "Invalid";
+    } catch {
+      year = "Invalid";
+    }
+
+    return year;
   };
 
   return (

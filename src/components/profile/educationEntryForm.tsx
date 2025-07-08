@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { Save, X } from 'lucide-react';
 import { useProfile, EducationEntry } from '@/context/profileContext';
-import { useState } from "react";
 
 interface EducationEntryFormProps {
   education?: EducationEntry | null;
@@ -19,7 +18,6 @@ interface EducationFormData {
 
 const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onClose }) => {
   const { addEducationEntry, updateEducationEntry } = useProfile();
-  const [isPresent, setIsPresent] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<EducationFormData>({
     defaultValues: {
@@ -110,7 +108,20 @@ const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onCl
               Dates Attended *
             </label>
             <input
-              {...register('dates', { required: 'Dates are required' })}
+              {...register('dates', {
+                required: 'Dates are required',
+                pattern: {
+                  value: /^[0-9]{4}-[0-9]{4}$/,
+                  message: 'Use format YYYY-YYYY',
+                },
+                validate: (value) => {
+                  const [start, end] = value.split('-').map(Number);
+                  if (isNaN(start) || isNaN(end)) return 'Years must be numbers';
+                  if (start > end) return 'Start year must be before end year';
+                  if (start < 1900 || end > new Date().getFullYear()) return 'Enter valid year range';
+                  return true;
+                }
+              })}
               type="text"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="e.g., 2018-2022"
