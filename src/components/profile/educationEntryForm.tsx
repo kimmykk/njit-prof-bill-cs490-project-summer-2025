@@ -29,11 +29,27 @@ const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onCl
   });
 
   const onSubmit = (data: EducationFormData) => {
-    if (education) {
-      updateEducationEntry(education.id, data);
-    } else {
-      addEducationEntry(data);
+    let startDate = "";
+    let endDate = "";
+
+    if (data.dates) {
+      const parts = data.dates.split(/[-–]/);
+      if (parts.length >= 1) startDate = parts[0].trim();
+      if (parts.length >= 2) endDate = parts[1].trim();
     }
+
+    const entry = {
+      ...data,
+      startDate,
+      endDate,
+    };
+
+    if (education) {
+      updateEducationEntry(education.id, entry);
+    } else {
+      addEducationEntry(entry);
+    }
+
     onClose();
   };
 
@@ -92,10 +108,23 @@ const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onCl
               Dates Attended *
             </label>
             <input
-              {...register('dates', { required: 'Dates are required' })}
+              {...register('dates', {
+                required: 'Dates are required',
+                pattern: {
+                  value: /^[0-9]{4}-[0-9]{4}$/,
+                  message: 'Use format YYYY-YYYY',
+                },
+                validate: (value) => {
+                  const [start, end] = value.split('-').map(Number);
+                  if (isNaN(start) || isNaN(end)) return 'Years must be numbers';
+                  if (start > end) return 'Start year must be before end year';
+                  if (start < 1900 || end > new Date().getFullYear()) return 'Enter valid year range';
+                  return true;
+                }
+              })}
               type="text"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="e.g., 2018-2022 or Sep 2018 - May 2022"
+              placeholder="e.g., 2018-2022"
             />
             {errors.dates && (
               <p className="mt-1 text-sm text-red-600">{errors.dates.message}</p>
