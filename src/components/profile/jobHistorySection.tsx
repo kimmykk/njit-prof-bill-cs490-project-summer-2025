@@ -105,7 +105,7 @@ const JobHistorySection: React.FC = () => {
         ) : (
           activeProfile.jobHistory.map((job, idx) => (
             <motion.div
-              key={job.id}
+              key={job.id ?? idx}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}

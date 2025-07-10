@@ -52,7 +52,6 @@ const EducationSection: React.FC = () => {
     } catch {
       year = "Invalid";
     }
-
     return year;
   };
 
@@ -115,7 +114,7 @@ const EducationSection: React.FC = () => {
 
             return (
               <motion.div
-                key={education.id}
+                key={education.id ?? index}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
