@@ -24,7 +24,7 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
     job?.accomplishments || ['']
   );
 
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<JobFormData>({
+  const { register, handleSubmit, setError, clearErrors, formState: { errors }, watch } = useForm<JobFormData>({
     defaultValues: {
       company: job?.company || '',
       title: job?.title || '',
@@ -36,12 +36,29 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
   });
 
   const isCurrentJob = !watch('endDate');
+  const startDate = watch("startDate");
+  const endDate = watch("endDate");
 
   const onSubmit = (data: JobFormData) => {
     const jobData = {
       ...data,
       accomplishments: accomplishments.filter(acc => acc.trim() !== ''),
     };
+
+    const start = new Date(data.startDate);
+    const end = data.endDate ? new Date(data.endDate) : null;
+
+    // Validating the date order
+    if (end && start > end) {
+      setError("endDate", {
+        type: "manual",
+        message: "End date must be after start date",
+      });
+      return;
+    }
+
+    clearErrors("endDate");
+
 
     if (job) {
       updateJobEntry(job.id, jobData);
@@ -129,7 +146,7 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
 
             {/* Custom calendar SVG icon */}
             <div className="pointer-events-none absolute right-3 top-10">
-            <svg
+              <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="white"
                 viewBox="2 0 24 24"
@@ -151,7 +168,7 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
             )}
           </div>
 
-          <div>
+          <div className='flex flex-col relative w-full'>
             <label className="block text-sm font-medium text-white mb-2">
               End Date
             </label>
@@ -163,8 +180,8 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
             />
 
             {/* Custom calendar SVG icon */}
-            <div className="pointer-events-none absolute right-27.5 top-159">
-            <svg
+            <div className="pointer-events-none absolute right-3 top-10">
+              <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="white"
                 viewBox="0 0 24 24"
@@ -175,16 +192,19 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
                 <path
                   fillRule="evenodd"
                   d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 
-                  2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1h-2v2H8V1H6v2H5zm0 
-                  2h14v2H5V5zm0 4h14v10H5V9z"
+        2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1h-2v2H8V1H6v2H5zm0 
+        2h14v2H5V5zm0 4h14v10H5V9z"
                 />
               </svg>
             </div>
-
-            {isCurrentJob && (
-              <p className="mt-1 text-sm text-green-600">Current position</p>
+            {errors.endDate && (
+              <p className="mt-1 text-sm text-red-600">{errors.endDate.message}</p>
             )}
           </div>
+
+          {isCurrentJob && (
+            <p className="mt-1 text-sm text-green-600">Current position</p>
+          )}
         </div>
 
         <div>
@@ -216,7 +236,7 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
               <span>Add Accomplishment</span>
             </button>
           </div>
-          
+
           <div className="space-y-2">
             {accomplishments.map((accomplishment, index) => (
               <div key={index} className="flex items-center space-x-2">

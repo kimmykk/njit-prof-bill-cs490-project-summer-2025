@@ -42,12 +42,14 @@ const JobHistorySection: React.FC = () => {
   };
 
   const formatDate = (dateString: string) => {
-    if (!dateString) return "";
-    const d = new Date(dateString);
-    return d.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-    });
+    if (!dateString || dateString === "Present") return "Present";
+    const d = new Date(`${dateString} 01`);
+    return isNaN(d.getTime())
+      ? "Invalid Date"
+      : d.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+      });
   };
 
   return (
@@ -103,7 +105,7 @@ const JobHistorySection: React.FC = () => {
         ) : (
           activeProfile.jobHistory.map((job, idx) => (
             <motion.div
-              key={job.id}
+              key={job.id ?? idx}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
@@ -127,7 +129,8 @@ const JobHistorySection: React.FC = () => {
                     <Calendar className="h-4 w-4 text-white" />
                     <p className="text-sm text-white">
                       {formatDate(job.startDate)} –{" "}
-                      {job.endDate ? formatDate(job.endDate) : "Present"}
+                      {job.endDate === "Present" || !job.endDate
+                        ? "Present" : formatDate(job.endDate)}
                     </p>
                   </div>
 
