@@ -40,20 +40,15 @@ const EducationSection: React.FC = () => {
     setShowAddForm(false);
   };
 
-  const formatYear = (str: string) => {
-    let year: number | string = "Invalid";
-
-    try {
-      const d = typeof str === "string"
-        ? new Date(`${str}-01-01T00:00:00Z`)
-        : new Date(str);
-
-      year = !isNaN(d.getTime()) ? d.getUTCFullYear() : "Invalid";
-    } catch {
-      year = "Invalid";
-    }
-
-    return year;
+  const formatDate = (dateString: string) => {
+    if (!dateString || dateString === "Present") return "Present";
+    const d = new Date(`${dateString} 01`);
+    return isNaN(d.getTime())
+      ? "Invalid Date"
+      : d.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+      });
   };
 
   return (
@@ -111,7 +106,6 @@ const EducationSection: React.FC = () => {
           </div>
         ) : (
           activeProfile.education.map((education, index) => {
-            const [start, end] = education.dates.split(/[-–]/).map((s) => s.trim());
 
             return (
               <motion.div
@@ -137,7 +131,8 @@ const EducationSection: React.FC = () => {
                     <div className="flex items-center justify-between text-sm text-white">
                       <div className="flex items-center space-x-1">
                         <Calendar className="h-4 w-4" />
-                        <span>{formatYear(start)} – {formatYear(end)}</span>
+                        {formatDate(education.startDate)} –{" "} {education.inProgress ?
+                          "Present" : education.endDate ? formatDate(education.endDate) : ""}
                       </div>
                       {education.gpa && (
                         <div>
