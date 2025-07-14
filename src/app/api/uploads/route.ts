@@ -1,30 +1,12 @@
 // src/app/api/uploads/route.ts
 import { NextResponse } from "next/server";
-import admin from "firebase-admin";
 import { bucket, db } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
+import { verifyAuthToken } from "@/lib/firebase-admin";
+import type { UserDoc } from "@/types/user";
 
 // disable built-in body parsing so we can stream FormData
 export const config = { api: { bodyParser: false } };
-
-// init Firebase Admin once
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-    }),
-  });
-}
-
-// our user doc interface
-interface UserDoc {
-  _id: string;
-  email: string;
-  name: string;
-  updated: Date;
-}
 
 /**
  * POST /api/uploads
@@ -35,16 +17,11 @@ interface UserDoc {
  */
 export async function POST(request: Request) {
   // 1) Authenticate
-  const auth = request.headers.get("Authorization") || "";
-  const idToken = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!idToken) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  let decoded: admin.auth.DecodedIdToken;
+  let decoded;
   try {
-    decoded = await admin.auth().verifyIdToken(idToken);
-  } catch {
-    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    decoded = await verifyAuthToken(request.headers.get("Authorization"));
+  } catch (error) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 401 });
   }
   const uid = decoded.uid;
 
@@ -111,16 +88,11 @@ export async function POST(request: Request) {
  */
 export async function GET(request: Request) {
   // 1) Authenticate
-  const auth = request.headers.get("Authorization") || "";
-  const idToken = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!idToken) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  let decoded: admin.auth.DecodedIdToken;
+  let decoded;
   try {
-    decoded = await admin.auth().verifyIdToken(idToken);
-  } catch {
-    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    decoded = await verifyAuthToken(request.headers.get("Authorization"));
+  } catch (error) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 401 });
   }
   const uid = decoded.uid;
 
@@ -145,17 +117,12 @@ export async function GET(request: Request) {
 
 // DELETE /api/uploads
 export async function DELETE(request: Request) {
-  // 1) Authenticate same as GET/POST
-  const auth = request.headers.get("Authorization") || "";
-  const idToken = auth.startsWith("Bearer ") ? auth.slice(7) : "";
-  if (!idToken) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  let decoded: admin.auth.DecodedIdToken;
+  // 1) Authenticate
+  let decoded;
   try {
-    decoded = await admin.auth().verifyIdToken(idToken);
-  } catch {
-    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    decoded = await verifyAuthToken(request.headers.get("Authorization"));
+  } catch (error) {
+    return NextResponse.json({ error: (error as Error).message }, { status: 401 });
   }
 
   // 2) Grab `id` from query
