@@ -3,23 +3,32 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
-import { Mail, Phone, Plus, X } from "lucide-react";
+import { Mail, Plus, X } from "lucide-react";
 import { useProfile, ContactInfo } from "@/context/profileContext";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { countries } from "@/lib/countries";
-
+import { DisambiguationModal } from "../ui/DisambiguationModal";
 
 const ContactInfoSection: React.FC = () => {
   const { activeProfile: profile, updateContactInfo } = useProfile();
+
   const [showAdditionalEmails, setShowAdditionalEmails] = useState(false);
   const [showAdditionalPhones, setShowAdditionalPhones] = useState(false);
 
-  const [primaryCountryCode, setPrimaryCountryCode] = useState("+1"); // Default US
+  // Store full country object
+  const [primaryCountry, setPrimaryCountry] = useState(
+    countries.find((c) => c.code === "+1" && c.label === "United States")!
+  );
+
   const [additionalCountryCodes, setAdditionalCountryCodes] = useState<string[]>(
     (profile.contactInfo.additionalPhones || []).map(() => "+1")
   );
+
+  const [ambiguousMatches, setAmbiguousMatches] = useState<typeof countries>([]);
+  const [showDisambiguation, setShowDisambiguation] = useState(false);
+  const [pendingPhone, setPendingPhone] = useState<string | null>(null);
 
   const {
     register,
@@ -35,7 +44,7 @@ const ContactInfoSection: React.FC = () => {
   const additionalEmails = watch("additionalEmails") || [];
   const additionalPhones = watch("additionalPhones") || [];
 
-  // Auto-detect country code from loaded phone
+  // Auto-detect country code from initial phone value
   useEffect(() => {
     const phone = profile.contactInfo?.phone || "";
     if (!phone) return;
@@ -46,7 +55,7 @@ const ContactInfoSection: React.FC = () => {
     if (normalized.startsWith("+")) {
       for (const country of countries) {
         if (normalized.startsWith(country.code)) {
-          setPrimaryCountryCode(country.code);
+          setPrimaryCountry(country);
           const local = normalized.slice(country.code.length).replace(/^0+/, "");
           setValue("phone", local);
           found = true;
@@ -56,13 +65,15 @@ const ContactInfoSection: React.FC = () => {
     }
 
     if (!found) {
-      setPrimaryCountryCode("+1");
+      setPrimaryCountry(
+        countries.find((c) => c.code === "+1" && c.label === "United States")!
+      );
       setValue("phone", normalized);
     }
   }, [profile.contactInfo?.phone, setValue]);
 
   const onSubmit = (data: ContactInfo) => {
-    const fullPhone = `${primaryCountryCode}${data.phone}`;
+    const fullPhone = `${primaryCountry.code}${data.phone}`;
     const fullAdditionalPhones = additionalPhones.map((p, i) => {
       return `${additionalCountryCodes[i]}${p}`;
     });
@@ -117,7 +128,6 @@ const ContactInfoSection: React.FC = () => {
         const newCodes = [...additionalCountryCodes];
         newCodes[index] = found.code;
         setAdditionalCountryCodes(newCodes);
-
         cleaned = cleaned.slice(found.code.length).replace(/^0+/, "");
       }
     }
@@ -221,8 +231,14 @@ const ContactInfoSection: React.FC = () => {
           <Label htmlFor="phone">Primary Phone Number *</Label>
           <div className="relative flex">
             <select
-              value={primaryCountryCode}
-              onChange={(e) => setPrimaryCountryCode(e.target.value)}
+              value={`${primaryCountry.code}|${primaryCountry.label}`}
+              onChange={(e) => {
+                const [code, label] = e.target.value.split("|");
+                const newCountry = countries.find(
+                  (c) => c.code === code && c.label === label
+                );
+                if (newCountry) setPrimaryCountry(newCountry);
+              }}
               className="
                 rounded-l
                 border
@@ -237,7 +253,10 @@ const ContactInfoSection: React.FC = () => {
               "
             >
               {countries.map((country) => (
-                <option key={country.code} value={country.code}>
+                <option
+                  key={`${country.code}-${country.label}`}
+                  value={`${country.code}|${country.label}`}
+                >
                   {country.emoji} {country.label} ({country.code})
                 </option>
               ))}
@@ -246,7 +265,7 @@ const ContactInfoSection: React.FC = () => {
               type="tel"
               className="rounded-l-none"
               placeholder={
-                primaryCountryCode === "+1" ? "(555) 123-4567" : "Enter phone number"
+                primaryCountry.code === "+1" ? "(555) 123-4567" : "Enter phone number"
               }
               {...register("phone", {
                 required: "Phone number is required",
@@ -261,9 +280,16 @@ const ContactInfoSection: React.FC = () => {
                 let value = e.target.value.trim();
 
                 if (value.startsWith("+")) {
-                  const found = countries.find((c) => value.startsWith(c.code));
-                  if (found) {
-                    setPrimaryCountryCode(found.code);
+                  const matches = countries.filter((c) => value.startsWith(c.code));
+                  if (matches.length > 1) {
+                    setAmbiguousMatches(matches);
+                    setPendingPhone(value);
+                    setShowDisambiguation(true);
+                    return;
+                  }
+                  if (matches.length === 1) {
+                    const found = matches[0];
+                    setPrimaryCountry(found);
                     value = value.slice(found.code.length).replace(/^0+/, "");
                   }
                 }
@@ -278,7 +304,7 @@ const ContactInfoSection: React.FC = () => {
           )}
         </div>
 
-        {/* The Additional Phones */}
+        {/* Additional Phones */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label>Additional Phone Numbers</Label>
@@ -317,7 +343,10 @@ const ContactInfoSection: React.FC = () => {
                       "
                     >
                       {countries.map((country) => (
-                        <option key={country.code} value={country.code}>
+                        <option
+                          key={`${country.code}-${country.label}`}
+                          value={country.code}
+                        >
                           {country.emoji} {country.label} ({country.code})
                         </option>
                       ))}
@@ -358,6 +387,25 @@ const ContactInfoSection: React.FC = () => {
           Update Contact Information
         </Button>
       </form>
+
+      {/* Disambiguation Modal */}
+      <DisambiguationModal
+        isOpen={showDisambiguation}
+        countries={ambiguousMatches}
+        onClose={() => {
+          setShowDisambiguation(false);
+          setPendingPhone(null);
+        }}
+        onSelect={(country) => {
+          setPrimaryCountry(country);
+          if (pendingPhone) {
+            const newValue = pendingPhone.slice(country.code.length).replace(/^0+/, "");
+            setValue("phone", newValue);
+          }
+          setShowDisambiguation(false);
+          setPendingPhone(null);
+        }}
+      />
     </motion.div>
   );
 };
