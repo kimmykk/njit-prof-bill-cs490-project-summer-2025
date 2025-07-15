@@ -278,7 +278,7 @@ const ContactInfoSection: React.FC = () => {
           )}
         </div>
 
-        {/* Additional Phones */}
+        {/* The Additional Phones */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label>Additional Phone Numbers</Label>
