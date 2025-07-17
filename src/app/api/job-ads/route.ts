@@ -4,7 +4,7 @@ import admin from "firebase-admin";
 import { db } from "@/lib/mongodb";
 import OpenAI from "openai";
 
-// 1) Initialize Firebase Admin if needed
+// ✅ Initialize Firebase Admin
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(
@@ -13,19 +13,19 @@ if (!admin.apps.length) {
   });
 }
 
-// 2) OpenAI client using your GitHub token
+// ✅ Setup OpenAI via GitHub proxy
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 if (!GITHUB_TOKEN) {
   console.error("Missing GITHUB_TOKEN");
 }
 const openai = GITHUB_TOKEN
   ? new OpenAI({
-      baseURL: "https://models.github.ai/inference",
-      apiKey: GITHUB_TOKEN,
-    })
+    baseURL: "https://models.github.ai/inference",
+    apiKey: GITHUB_TOKEN,
+  })
   : null;
 
-// 3) Record shape
+// ✅ MongoDB job ad schema
 interface JobAdRecord {
   userId: string;
   url?: string;
@@ -33,12 +33,16 @@ interface JobAdRecord {
   companyName: string;
   jobTitle: string;
   postedAt: Date;
+  location?: string;
+  summary: string;
+  requirements: string[];
+  verbatimText: string;
   previewHtml: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// 4) GET /api/job-ads → list this user’s job ads
+// ✅ GET /api/job-ads
 export async function GET(request: Request) {
   const auth = request.headers.get("Authorization")?.split(" ")[1];
   if (!auth) {
@@ -65,13 +69,17 @@ export async function GET(request: Request) {
     companyName: r.companyName,
     jobTitle: r.jobTitle,
     postedAt: r.postedAt.toISOString(),
+    location: r.location,
+    summary: r.summary,
+    requirements: r.requirements,
+    verbatimText: r.verbatimText,
     previewHtml: r.previewHtml,
   }));
 
   return NextResponse.json(payload);
 }
 
-// 5) POST /api/job-ads → extract & save a new job ad
+// ✅ POST /api/job-ads
 export async function POST(request: Request) {
   if (!openai) {
     return NextResponse.json(
@@ -100,32 +108,44 @@ export async function POST(request: Request) {
     );
   }
 
-  // Build the AI prompt
   const source = body.url
     ? `Fetch and parse this job ad: ${body.url}`
     : `Parse this job ad text:\n\n${body.rawText}`;
 
   const systemPrompt = `
-You are a job‐ad extractor. Return ONLY JSON with these fields:
+You are a job post parser. Return ONLY valid JSON like this:
+
 {
   "companyName": string,
   "jobTitle": string,
-  "postedAt": string,     // ISO date
-  "previewHtml": string   // short HTML snippet
+  "postedAt": string,       // ISO date
+  "location": string,       // optional
+  "summary": string,        // 1-paragraph summary
+  "requirements": string[], // bullet list
+  "verbatimText": string,   // full original job post
+  "previewHtml": string     // short HTML snippet
 }
-Respond with nothing else, no markdown fences.
+
+Return only JSON. No markdown, no commentary.
 `.trim();
 
-  const ai = await openai.chat.completions.create({
-    model: "openai/gpt-4o-mini",
-    temperature: 0,
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: source },
-    ],
-  });
+  let ai;
+  try {
+    ai = await openai.chat.completions.create({
+      model: "gpt-4o",
+      temperature: 0,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: source },
+      ],
+    });
+  } catch (err: any) {
+    return NextResponse.json(
+      { error: "OpenAI request failed", details: err.message },
+      { status: 500 }
+    );
+  }
 
-  // strip any markdown fences & trim
   let raw = ai.choices[0].message.content ?? "";
   raw = raw
     .trim()
@@ -137,18 +157,19 @@ Respond with nothing else, no markdown fences.
     companyName: string;
     jobTitle: string;
     postedAt: string;
+    location?: string;
+    summary: string;
+    requirements: string[];
+    verbatimText: string;
     previewHtml: string;
   };
+
   try {
     parsed = JSON.parse(raw);
   } catch {
-    return NextResponse.json(
-      { error: "Invalid JSON from AI", raw },
-      { status: 502 }
-    );
+    return NextResponse.json({ error: "Invalid JSON from AI", raw }, { status: 502 });
   }
 
-  // Save to MongoDB
   const now = new Date();
   const record: JobAdRecord = {
     userId: decoded.uid,
@@ -157,20 +178,21 @@ Respond with nothing else, no markdown fences.
     companyName: parsed.companyName,
     jobTitle: parsed.jobTitle,
     postedAt: new Date(parsed.postedAt),
+    location: parsed.location,
+    summary: parsed.summary,
+    requirements: parsed.requirements,
+    verbatimText: parsed.verbatimText,
     previewHtml: parsed.previewHtml,
     createdAt: now,
     updatedAt: now,
   };
 
-  const result = await db.collection<JobAdRecord>("jobAds").insertOne(record);
+  const result = await db.collection("jobAds").insertOne(record);
 
   return NextResponse.json({
     id: result.insertedId.toString(),
+    ...parsed,
     url: body.url,
     rawText: body.rawText,
-    companyName: parsed.companyName,
-    jobTitle: parsed.jobTitle,
-    postedAt: parsed.postedAt,
-    previewHtml: parsed.previewHtml,
   });
 }
