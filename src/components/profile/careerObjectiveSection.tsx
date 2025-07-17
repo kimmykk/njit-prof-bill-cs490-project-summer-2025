@@ -1,11 +1,12 @@
 // src/components/profile/CareerObjectiveSection.tsx
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { Target } from "lucide-react";
 import { useProfile } from "@/context/profileContext";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -15,25 +16,63 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useAuth } from "@/context/authContext";
 
 interface ObjectiveForm {
   careerObjective: string;
 }
 
 const CareerObjectiveSection: React.FC = () => {
-  const { activeProfile, updateCareerObjective } = useProfile();
+  const { activeProfile: profile, activeProfile, updateCareerObjective, markDirty, updateCareerObjectiveToDB, clearDirty, activeProfileId } = useProfile();
   const {
     register,
-    handleSubmit,
+    handleSubmit, watch,
+    trigger, setValue,
+    reset,
     formState: { errors },
-  } = useForm<ObjectiveForm>({
-    defaultValues: {
-      careerObjective: activeProfile.careerObjective,
-    },
-  });
+  } = useForm<ObjectiveForm>();
 
-  const onSubmit = (data: ObjectiveForm) => {
-    updateCareerObjective(data.careerObjective);
+  useEffect(() => {
+    if (profile?.careerObjective) {
+      reset({ careerObjective: profile.careerObjective });
+    }
+  }, [profile?.contactInfo, reset]);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      if (value.careerObjective !== activeProfile.careerObjective) {
+        markDirty("careerObjective");
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, activeProfile.careerObjective]);
+
+  const onSubmit = async (data: ObjectiveForm) => {
+    if (!user || !activeProfileId) return;
+    try {
+      const token = await user.getIdToken();
+
+      const res = await fetch(`/api/profiles/${activeProfileId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          data: { careerObjective: data.careerObjective },
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update career objective");
+
+      updateCareerObjective(data.careerObjective);
+      clearDirty("careerObjective");
+      toast.success("Career Objective updated!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update");
+    }
   };
 
   return (
@@ -68,6 +107,13 @@ const CareerObjectiveSection: React.FC = () => {
                     "Career objective should be at least 50 characters",
                 },
               })}
+              onChange={(e) => {
+                const value = e.target.value;
+                setValue("careerObjective", value);
+                updateCareerObjective(value);
+                markDirty("careerObjective");
+                trigger("careerObjective");
+              }}
               rows={6}
               className="pl-10 resize-none"
               placeholder="Describe your career goals, what you're looking for in your next role, and how you want to contribute to an organization..."
@@ -79,10 +125,8 @@ const CareerObjectiveSection: React.FC = () => {
             </p>
           )}
         </div>
+        <Button type="submit" className="mt-4 w-full">Update Career Objective</Button>
 
-        <Button type="submit" className="w-full">
-          Update Career Objective
-        </Button>
       </form>
 
       {/* Writing Tips */}

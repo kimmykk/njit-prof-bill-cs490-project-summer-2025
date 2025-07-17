@@ -19,7 +19,7 @@ interface JobFormData {
 }
 
 const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
-  const { addJobEntry, updateJobEntry } = useProfile();
+  const { addJobEntry, updateJobEntry, markDirty } = useProfile();
   const [accomplishments, setAccomplishments] = useState<string[]>(
     job?.accomplishments || ['']
   );
@@ -65,6 +65,7 @@ const JobEntryForm: React.FC<JobEntryFormProps> = ({ job, onClose }) => {
     } else {
       addJobEntry(jobData);
     }
+    markDirty("jobHistory");
     onClose();
   };
 

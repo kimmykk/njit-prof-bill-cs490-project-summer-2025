@@ -2,6 +2,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus,
@@ -14,7 +16,7 @@ import { useProfile, EducationEntry } from "@/context/profileContext";
 import EducationEntryForm from "./educationEntryForm";
 
 const EducationSection: React.FC = () => {
-  const { activeProfile, deleteEducationEntry } = useProfile();
+  const { activeProfile, deleteEducationEntry, updateFullEducation } = useProfile();
   const [editingEducation, setEditingEducation] = useState<EducationEntry | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -55,6 +57,19 @@ const EducationSection: React.FC = () => {
     return year;
   };
 
+  const handleUpdateEducation = async () => {
+    try {
+      await Promise.all(
+        activeProfile.education.map((education) =>
+          updateFullEducation(activeProfile.education)
+        )
+      );
+      toast.success("Education updated successfully!");
+    } catch (error) {
+      toast.error("Failed to update education.");
+      console.error("Update failed:", error);
+    }
+  };
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -102,15 +117,15 @@ const EducationSection: React.FC = () => {
 
       {/* Education List */}
       <div className="space-y-4">
-        {activeProfile.education.length === 0 ? (
+        {activeProfile.education?.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <GraduationCap className="h-12 w-12 mx-auto mb-4 text-white" />
             <p className="text-lg font-medium mb-2">No education entries yet</p>
             <p>Add your educational background to get started</p>
           </div>
         ) : (
-          activeProfile.education.map((education, index) => {
-            const [start, end] = education.dates.split(/[-–]/).map((s) => s.trim());
+          activeProfile.education?.map((education, index) => {
+            const [start, end] = (education.dates ?? "").split(/[-–]/).map((s) => s.trim());
 
             return (
               <motion.div
@@ -166,6 +181,13 @@ const EducationSection: React.FC = () => {
           })
         )}
       </div>
+      <Button
+        onClick={handleUpdateEducation}
+        className="mt-4 w-full"
+      >
+        Update Education
+      </Button>
+
 
       {/* Tips */}
       <div className="rounded-lg p-4 border border-blue-500">

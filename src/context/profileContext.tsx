@@ -65,14 +65,27 @@ export interface ProfileContextType {
   saveChanges: () => Promise<void>;
   hasUnsavedChanges: boolean;
   updateContactInfo: (ci: Partial<ContactInfo>) => void;
+  updateContactInfoToDB: () => Promise<void>;
   updateCareerObjective: (obj: string) => void;
+  updateCareerObjectiveToDB: () => Promise<void>;
   updateSkills: (skills: string[]) => void;
   addJobEntry: (job: Omit<JobEntry, "id">) => void;
   updateJobEntry: (id: string, job: Partial<JobEntry>) => void;
+  updateFullJobHistory: (jobHistory: JobEntry[]) => Promise<void>;
   deleteJobEntry: (id: string) => void;
   addEducationEntry: (edu: Omit<EducationEntry, "id">) => void;
   updateEducationEntry: (id: string, edu: Partial<EducationEntry>) => void;
+  updateFullEducation: (education: EducationEntry[]) => Promise<void>;
   deleteEducationEntry: (id: string) => void;
+  markDirty: (section: "contactInfo" | "careerObjective" | "skills" | "jobHistory" | "education") => void;
+  clearDirty: (section: "contactInfo" | "careerObjective" | "skills" | "jobHistory" | "education") => void;
+  dirty: {
+    contactInfo: boolean;
+    careerObjective: boolean;
+    skills: boolean;
+    jobHistory: boolean;
+    education: boolean;
+  };
 }
 
 const EMPTY_PROFILE: ProfileData = {
@@ -100,6 +113,14 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
   const [profileName, setProfileName] = useState<string>(""); // keep name too
   const [hasUnsavedChanges, setHasUnsavedChanges] =
     useState<boolean>(false);
+  const [dirty, setDirty] = useState({
+    contactInfo: false,
+    careerObjective: false,
+    skills: false,
+    jobHistory: false,
+    education: false,
+  });
+
 
   // Fetch list of profiles
   const loadProfiles = useCallback(async () => {
@@ -212,6 +233,13 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     });
     if (!res.ok) throw new Error("Save failed");
     setHasUnsavedChanges(false);
+    setDirty({
+      contactInfo: false,
+      careerObjective: false,
+      skills: false,
+      jobHistory: false,
+      education: false,
+    });
     await loadProfiles();
   }, [user, activeProfileId, profileData, loadProfiles]);
 
@@ -274,6 +302,102 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
     return user.uid;
   }
 
+  const markDirty = (section: keyof typeof dirty) => {
+    setHasUnsavedChanges(true);
+    setDirty((prev) => ({ ...prev, [section]: true }));
+  };
+
+  const clearDirty = (section: keyof typeof dirty) => {
+    setDirty((prev) => {
+      const updated = { ...prev, [section]: false };
+
+      const stillDirty = Object.values(updated).some((v) => v);
+      setHasUnsavedChanges(stillDirty);
+
+      return updated;
+    });
+  };
+
+  const updateFullJobHistory = async (jobHistory: JobEntry[]) => {
+    if (!user || !activeProfileId) return;
+
+    const token = await user.getIdToken();
+    const res = await fetch(`/api/profiles/${activeProfileId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ data: { jobHistory } }),
+    });
+
+    if (!res.ok) throw new Error("Failed to update job history");
+
+    setProfileData(prev => ({
+      ...prev,
+      jobHistory
+    }));
+    setDirty(prev => ({ ...prev, jobHistory: false }));
+    setHasUnsavedChanges(false);
+  };
+
+  const updateFullEducation = async (education: EducationEntry[]) => {
+    if (!user || !activeProfileId) return;
+
+    const token = await user.getIdToken();
+    const res = await fetch(`/api/profiles/${activeProfileId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ data: { education } }),
+    });
+
+    if (!res.ok) throw new Error("Failed to update job history");
+
+    setProfileData(prev => ({
+      ...prev,
+      education
+    }));
+    setDirty(prev => ({ ...prev, education: false }));
+    setHasUnsavedChanges(false);
+  };
+
+  const updateCareerObjectiveToDB = async () => {
+    if (!user || !activeProfileId) return;
+    const token = await user.getIdToken();
+    await fetch(`/api/profiles/${activeProfileId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        data: { careerObjective: profileData.careerObjective },
+      }),
+    });
+    setDirty((prev) => ({ ...prev, careerObjective: false }));
+    setHasUnsavedChanges(false);
+  };
+
+  const updateContactInfoToDB = async () => {
+    if (!user || !activeProfileId) return;
+    const token = await user.getIdToken();
+    await fetch(`/api/profiles/${activeProfileId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        data: { contactInfo: profileData.contactInfo },
+      }),
+    });
+    setDirty((prev) => ({ ...prev, contactInfo: false }));
+    setHasUnsavedChanges(false);
+  };
+
   return (
     <ProfileContext.Provider
       value={{
@@ -285,165 +409,76 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
         deleteProfile,
         renameProfile,
         parseFile,
+        updateFullJobHistory,
+        updateFullEducation,
+        updateCareerObjectiveToDB,
+        updateContactInfoToDB,
+        dirty,
+        clearDirty,
+        markDirty,
         saveChanges,
         hasUnsavedChanges,
 
-        updateContactInfo: async (ci) => {
-          const ref = getUserProfileRef(hasUserId(), activeProfileId);
-          const docSnap = await getDoc(ref);
-
-          if (!docSnap.exists()) {
-            await setDoc(ref, {
-              ...profileData,
-              contactInfo: { ...profileData.contactInfo, ...ci },
-            });
-          } else {
-            await updateDoc(ref, {
-              contactInfo: { ...profileData.contactInfo, ...ci },
-            });
-          }
-
-          updateField("contactInfo", { ...profileData.contactInfo, ...ci });
+        updateContactInfo: (ci: Partial<ContactInfo>) => {
+          updateField("contactInfo", {
+            ...profileData.contactInfo,
+            ...ci,
+          });
+          markDirty("contactInfo");
         },
 
-        updateCareerObjective: async (co: string) => {
-          const ref = getUserProfileRef(hasUserId(), activeProfileId);
-          const docSnap = await getDoc(ref);
-
-          if (!docSnap.exists()) {
-            await setDoc(ref, {
-              ...profileData,
-              careerObjective: co,
-            });
-          } else {
-            await updateDoc(ref, {
-              careerObjective: co,
-            });
-          }
-
+        updateCareerObjective: (co: string) => {
           updateField("careerObjective", co);
+          markDirty("careerObjective");
         },
 
-        updateSkills: async (s) => {
-          const ref = getUserProfileRef(hasUserId(), activeProfileId);
-          const docSnap = await getDoc(ref);
-
-          if (!docSnap.exists()) {
-            await setDoc(ref, {
-              ...profileData,
-              skills: { ...profileData.skills, ...s },
-            });
-          } else {
-            await updateDoc(ref, {
-              skills: { ...profileData.skills, ...s },
-            });
-          }
-
-          updateField("skills", { ...profileData.skills, ...s });
+        updateSkills: (skills) => {
+          updateField("skills", skills);
+          markDirty("skills");
         },
 
-        addJobEntry: async (job) => {
-          const newJob = { ...job, id: Date.now().toString() }
-          const ref = getUserProfileRef(hasUserId(), activeProfileId);
-          const docSnap = await getDoc(ref);
-          let existingJobs: JobEntry[] = [];
-
-          if (docSnap.exists()) {
-            existingJobs = docSnap.data()?.jobHistory || [];
-          } else {
-            await setDoc(ref, {
-              ...profileData,
-              jobHistory: [...profileData.jobHistory, newJob],
-            });
-            updateField("jobHistory", [...profileData.jobHistory, newJob]);
-            return;
-          }
-          const updatedJobs = [...existingJobs, ...profileData.jobHistory.filter(
-            (j) => !existingJobs.some((e) => e.id === j.id)), newJob,];
-
-          await updateDoc(ref, { jobHistory: updatedJobs });
-          updateField("jobHistory", updatedJobs);
-        },
-
-        updateJobEntry: async (id, job) => {
-          const ref = getUserProfileRef(hasUserId(), activeProfileId);
-          const docSnap = await getDoc(ref);
-          if (!docSnap.exists()) await setDoc(ref, EMPTY_PROFILE, { merge: true });
-          const snap = await getDoc(ref);
-          const updated = (snap.data()?.jobHistory || []).map((j: JobEntry) =>
-            j.id === id ? { ...j, ...job } : j);
-          await updateDoc(ref, { jobHistory: updated });
-
+        addJobEntry: (job) => {
+          const newJob = { ...job, id: Date.now().toString() };
+          const updated = [...profileData.jobHistory, newJob];
           updateField("jobHistory", updated);
+          markDirty("jobHistory");
         },
 
-        deleteJobEntry: async (id) => {
-          const ref = getUserProfileRef(hasUserId(), activeProfileId);
-          const docSnap = await getDoc(ref);
-          if (!docSnap.exists()) return;
-          const firestoreJobs: JobEntry[] = docSnap.data()?.jobHistory || [];
-          const localJobs: JobEntry[] = profileData.jobHistory;
-          const mergedJobs = [
-            ...firestoreJobs,
-            ...localJobs.filter(
-              (localJob) => !firestoreJobs.some((f) => f.id === localJob.id)
-            ),
-          ];
-
-          const filtered = mergedJobs.filter((j) => j.id !== id);
-
-          await updateDoc(ref, { jobHistory: filtered });
-          updateField("jobHistory", filtered);
-        },
-
-        addEducationEntry: async (ed) => {
-          const newEd = { ...ed, id: Date.now().toString() }
-          const ref = getUserProfileRef(hasUserId(), activeProfileId);
-          const docSnap = await getDoc(ref);
-          let existingEd: EducationEntry[] = [];
-
-          if (docSnap.exists()) {
-            existingEd = docSnap.data()?.education || [];
-          } else {
-            await setDoc(ref, {
-              ...profileData,
-              education: [...profileData.education, newEd],
-            });
-            updateField("education", [...profileData.education, newEd]);
-            return;
-          }
-          const updatedEd = [...existingEd, ...profileData.education.filter(
-            (j) => !existingEd.some((e) => e.id === j.id)), newEd,];
-
-          await updateDoc(ref, { education: updatedEd });
-          updateField("education", updatedEd);
-        },
-
-        updateEducationEntry: async (id, ed) => {
-          const ref = getUserProfileRef(hasUserId(), activeProfileId);
-          const docSnap = await getDoc(ref);
-          if (!docSnap.exists()) await setDoc(ref, EMPTY_PROFILE, { merge: true });
-          const snap = await getDoc(ref);
-          const updated = (snap.data()?.education || []).map((e: EducationEntry) =>
-            e.id === id ? { ...e, ...ed } : e);
-          await updateDoc(ref, { education: updated });
-          updateField("education", profileData.education.map((x) =>
-            x.id === id ? { ...x, ...ed } : x
-          )
+        updateJobEntry: (id, job) => {
+          const updated = profileData.jobHistory.map((j) =>
+            j.id === id ? { ...j, ...job } : j
           );
+          updateField("jobHistory", updated);
+          markDirty("jobHistory");
         },
 
-        deleteEducationEntry: async (id) => {
-          const ref = getUserProfileRef(hasUserId(), activeProfileId);
-          const docSnap = await getDoc(ref);
-          const existingEd = [...(docSnap.data()?.education || []), ...profileData.education.filter(j =>
-            !(docSnap.data()?.education || []).some((e: EducationEntry) => e.id === j.id))
-          ];
-          const filtered = existingEd.filter((j: EducationEntry) => j.id !== id);
-          await updateDoc(ref, { education: filtered });
-
-          updateField("education", filtered);
+        deleteJobEntry: (id) => {
+          const updated = profileData.jobHistory.filter((job) => job.id !== id);
+          updateField("jobHistory", updated);
+          markDirty("jobHistory");
         },
+
+        addEducationEntry: (ed) => {
+          const newEdu = { ...ed, id: Date.now().toString() };
+          const updated = [...profileData.education, newEdu];
+          updateField("education", updated);
+          markDirty("education");
+        },
+
+        updateEducationEntry: (id, ed) => {
+          const updated = profileData.education.map((e) =>
+            e.id === id ? { ...e, ...ed } : e
+          );
+          updateField("education", updated);
+          markDirty("education");
+        },
+
+        deleteEducationEntry: (id) => {
+          const updated = profileData.education.filter((edu) => edu.id !== id);
+          updateField("education", updated);
+          markDirty("education");
+        },
+
       }}
     >
       {children}

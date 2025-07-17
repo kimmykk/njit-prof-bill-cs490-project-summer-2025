@@ -12,14 +12,16 @@ import {
   User,
 } from "lucide-react";
 import { useProfile, JobEntry } from "@/context/profileContext";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import JobEntryForm from "./jobEntryForm";
 
 const JobHistorySection: React.FC = () => {
-  const { activeProfile, deleteJobEntry } = useProfile();
+  const { activeProfile, deleteJobEntry, updateFullJobHistory } = useProfile();
   const [editingJob, setEditingJob] = useState<JobEntry | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  // Whenever we switch to a different profile, close any open form
   useEffect(() => {
     setEditingJob(null);
     setShowAddForm(false);
@@ -52,6 +54,21 @@ const JobHistorySection: React.FC = () => {
       });
   };
 
+  const handleUpdateJob = async () => {
+    try {
+      await Promise.all(
+        activeProfile.jobHistory.map((job) =>
+          updateFullJobHistory(activeProfile.jobHistory)
+        )
+      );
+      toast.success("Jobs updated successfully!");
+      setHasUnsavedChanges(false);
+    } catch (error) {
+      toast.error("Failed to update jobs.");
+      console.error("Update failed:", error);
+    }
+  };
+  const jobs = activeProfile.jobHistory ?? [];
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -96,14 +113,14 @@ const JobHistorySection: React.FC = () => {
 
       {/* Job List */}
       <div className="space-y-4">
-        {activeProfile.jobHistory.length === 0 ? (
+        {jobs.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Building className="h-12 w-12 mx-auto mb-4 text-gray-300" />
             <p className="text-lg font-medium mb-2">No job history yet</p>
             <p>Add your first job experience to get started</p>
           </div>
         ) : (
-          activeProfile.jobHistory.map((job, idx) => (
+          jobs.map((job, idx) => (
             <motion.div
               key={job.id ?? idx}
               initial={{ opacity: 0, y: 20 }}
@@ -169,8 +186,16 @@ const JobHistorySection: React.FC = () => {
               </div>
             </motion.div>
           ))
+
         )}
       </div>
+      <Button
+        onClick={handleUpdateJob}
+        className="mt-4 w-full"
+      >
+        Update Jobs
+      </Button>
+
 
       {/* Pro Tips */}
       <div className="border border-blue-500 rounded-lg p-4">

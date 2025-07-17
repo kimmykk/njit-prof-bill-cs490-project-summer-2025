@@ -19,7 +19,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from "@/context/toastContext";
 import { usePathname } from 'next/navigation';
 
-const VALID_SECTIONS = ["contact","objective","skills","jobs","education"] as const;
+const VALID_SECTIONS = ["contact", "objective", "skills", "jobs", "education"] as const;
 type SectionKey = typeof VALID_SECTIONS[number];
 
 /** 
@@ -57,7 +57,7 @@ function useHash(): SectionKey {
 }
 
 export default function ProfilePage() {
-  const { hasUnsavedChanges, saveChanges } = useProfile();
+  const { hasUnsavedChanges, saveChanges, dirty } = useProfile();
   const [isReParsing, setIsReParsing] = useState(false);
   const toast = useToast();
 
@@ -108,26 +108,34 @@ export default function ProfilePage() {
                 disabled={isReParsing}
               >
                 <RefreshCw
-                  className={`h-4 w-4 mr-2 ${
-                    isReParsing ? 'animate-spin' : ''
-                  }`}
+                  className={`h-4 w-4 mr-2 ${isReParsing ? 'animate-spin' : ''
+                    }`}
                 />
                 Re-parse History
               </Button>
 
               <Button onClick={handleSave} disabled={!hasUnsavedChanges}>
                 <Save className="h-4 w-4 mr-2" />
-                Save Changes
+                Save All Changes
               </Button>
             </div>
           </div>
 
           {hasUnsavedChanges && (
             <Alert className="mt-4 border-amber-200 bg-amber-50">
-              <AlertCircle className="h-4 w-4" color='black' />
-              <AlertDescription className="text-amber-800">
-                You have unsaved changes
-              </AlertDescription>
+              <div className="flex items-center">
+                <AlertCircle className="h-4 w-4" color='black' />
+                <AlertDescription className="text-amber-800">
+                  You have unsaved changes
+                </AlertDescription>
+              </div>
+              <ul className="list-disc list-inside text-sm text-amber-800 pl-6">
+                {dirty.contactInfo && <li>Contact Information</li>}
+                {dirty.careerObjective && <li>Career Objective</li>}
+                {dirty.skills && <li>Skills</li>}
+                {dirty.jobHistory && <li>Job History</li>}
+                {dirty.education && <li>Education</li>}
+              </ul>
             </Alert>
           )}
         </motion.div>
