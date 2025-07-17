@@ -1,41 +1,81 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { Save, X } from 'lucide-react';
 import { useProfile, EducationEntry } from '@/context/profileContext';
 
-interface EducationEntryFormProps {
-  education?: EducationEntry | null;
-  onClose: () => void;
-}
-
 interface EducationFormData {
+  id: string;
   school: string;
   degree: string;
-  dates: string;
+  startDate: string;
+  endDate: string;
   gpa?: string;
+  inProgress?: boolean;
+}
+
+interface EducationEntryFormProps {
+  education?: EducationFormData | null;
+  onClose: () => void;
 }
 
 const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onClose }) => {
   const { addEducationEntry, updateEducationEntry } = useProfile();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<EducationFormData>({
+  const { register, handleSubmit, setError, clearErrors, setValue, formState: { errors }, watch } = useForm<EducationFormData>({
     defaultValues: {
       school: education?.school || '',
       degree: education?.degree || '',
-      dates: education?.dates || '',
+      startDate: education?.startDate || '',
+      endDate: education?.endDate || '',
       gpa: education?.gpa || '',
+      inProgress: education?.inProgress ?? false,
     }
   });
 
   const onSubmit = (data: EducationFormData) => {
-    if (education) {
-      updateEducationEntry(education.id, data);
-    } else {
-      addEducationEntry(data);
+    const start = new Date(data.startDate);
+    const end = data.inProgress || !data.endDate ? null : new Date(data.endDate);
+
+    if (end && start > end) {
+      setError("endDate", {
+        type: "manual",
+        message: "End date must be after start date",
+      });
+      return;
     }
+    clearErrors("endDate");
+
+    const eduData = {
+      ...data,
+      inProgress: data.inProgress ?? false,
+    };
+
+    if (education) {
+      updateEducationEntry(education.id, eduData);
+    } else {
+      addEducationEntry(eduData);
+    }
+
     onClose();
   };
+
+  const [wasEndDate, setWasEndDate] = useState<string | undefined>(education?.endDate);
+
+  const watchInProgress = watch("inProgress");
+
+  useEffect(() => {
+    const end = watch("endDate");
+
+    if (watchInProgress && end) {
+      setWasEndDate(end);
+      setValue("endDate", "");
+    }
+
+    if (!watchInProgress && !watch("endDate") && wasEndDate) {
+      setValue("endDate", wasEndDate);
+    }
+  }, [watchInProgress]);
 
   return (
     <motion.div
@@ -87,21 +127,66 @@ const EducationEntryForm: React.FC<EducationEntryFormProps> = ({ education, onCl
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-white-700 mb-2">
-              Dates Attended *
+
+          <div className='flex flex-col relative w-full'>
+            <label className="block text-sm font-medium text-white mb-2">
+              Start Date *
             </label>
             <input
-              {...register('dates', { required: 'Dates are required' })}
-              type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="e.g., 2018-2022 or Sep 2018 - May 2022"
+              {...register('startDate', { required: 'Start date is required' })}
+              type="month"
+              className="bg-black w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
-            {errors.dates && (
-              <p className="mt-1 text-sm text-red-600">{errors.dates.message}</p>
+            <div className="pointer-events-none absolute right-3 top-10">
+              {/* Calendar Icon */}
+              <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="2 0 24 24" width="17" height="17">
+                <path d="M7 10h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z" />
+                <path fillRule="evenodd" d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 
+                2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1h-2v2H8V1H6v2H5zm0 
+                2h14v2H5V5zm0 4h14v10H5V9z" />
+              </svg>
+            </div>
+            {errors.startDate && (
+              <p className="mt-1 text-sm text-red-600">{errors.startDate.message}</p>
             )}
           </div>
 
+          {/* End Date */}
+          <div className='flex flex-col relative w-full'>
+            <label className="block text-sm font-medium text-white mb-2">
+              End Date
+            </label>
+            <input
+              {...register('endDate')}
+              type="month"
+              disabled={watch("inProgress")}
+              className={`bg-black w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${watch("inProgress") ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              placeholder="Leave empty if still enrolled"
+            />
+            <div className="pointer-events-none absolute right-3 top-10">
+              {/* Calendar Icon */}
+              <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" width="17" height="17">
+                <path d="M7 10h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z" />
+                <path fillRule="evenodd" d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 
+                2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1h-2v2H8V1H6v2H5zm0 
+                2h14v2H5V5zm0 4h14v10H5V9z" />
+              </svg>
+            </div>
+            {errors.endDate && (
+              <p className="mt-1 text-sm text-red-600">{errors.endDate.message}</p>
+            )}
+
+            {/* In Progress Checkbox */}
+            <label className="flex items-center mt-3 gap-2 text-sm text-white">
+              <input
+                type="checkbox"
+                {...register("inProgress")}
+                className="form-checkbox text-blue-600"
+              />
+              In Progress
+            </label>
+          </div>
           <div>
             <label className="block text-sm font-medium text-white-700 mb-2">
               GPA (Optional)

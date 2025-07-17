@@ -2,7 +2,10 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { Plus, X, GripVertical } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import { useProfile } from "@/context/profileContext";
+import { useAuth } from "@/context/authContext";
 
 // dnd‑kit core + sortable helpers
 import {
@@ -75,14 +78,14 @@ function SkillChip({ skill, onRemove }: SkillChipProps) {
  * Skills section with drag‑and‑drop ordering
  ******************************/
 const SkillsSection: React.FC = () => {
-  const { activeProfile, updateSkills } = useProfile();
-
+  const { activeProfile, updateSkills, markDirty, saveChanges, clearDirty, activeProfileId } = useProfile();
+  const { user } = useAuth();
+  if (!activeProfile) return null;
   // Local copy of the skills so we can reorder instantly
   const [skills, setSkills] = useState<string[]>(activeProfile.skills);
   const [newSkill, setNewSkill] = useState<string>("");
-
   // Make sure local state stays in sync when profile changes
-  useEffect(() => setSkills(activeProfile.skills), [activeProfile.skills]);
+  useEffect(() => setSkills(activeProfile.skills), [activeProfile?.skills]);
 
   /***** dnd‑kit sensors *****/
   const sensors = useSensors(
@@ -90,13 +93,40 @@ const SkillsSection: React.FC = () => {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }) // a11y
   );
 
+  const updateSkillsToDB = async () => {
+    if (!user || !activeProfileId) return;
+
+    try {
+      const token = await user.getIdToken();
+
+      const res = await fetch(`/api/profiles/${activeProfileId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ data: { skills } }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update skills");
+
+      updateSkills(skills);
+      clearDirty("skills");
+      toast.success("Skills updated!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update skills");
+    }
+  };
+
+
   /***** CRUD helpers *****/
   const addSkill = () => {
     const trimmed = newSkill.trim();
     if (!trimmed || skills.includes(trimmed)) return;
     const next = [...skills, trimmed];
     setSkills(next);
-    updateSkills(next);
+    markDirty("skills");
     setNewSkill("");
   };
 
@@ -104,9 +134,9 @@ const SkillsSection: React.FC = () => {
     (skill: string) => {
       const next = skills.filter((s) => s !== skill);
       setSkills(next);
-      updateSkills(next);
+      markDirty("skills");
     },
-    [skills, updateSkills]
+    [skills, markDirty]
   );
 
   /***** Handle the actual re‑ordering *****/
@@ -118,9 +148,9 @@ const SkillsSection: React.FC = () => {
       const newIndex = skills.indexOf(over.id as string);
       const next = arrayMove(skills, oldIndex, newIndex);
       setSkills(next);
-      updateSkills(next);
+      markDirty("skills");
     },
-    [skills, updateSkills]
+    [skills, markDirty]
   );
 
   return (
@@ -156,7 +186,7 @@ const SkillsSection: React.FC = () => {
       </div>
 
       {/** List of draggable skills **/}
-      {skills.length === 0 ? (
+      {skills?.length === 0 ? (
         <p className="text-center text-muted-foreground">No skills yet.</p>
       ) : (
         <DndContext
@@ -164,16 +194,20 @@ const SkillsSection: React.FC = () => {
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
         >
-          <SortableContext items={skills} strategy={verticalListSortingStrategy}>
+          <SortableContext items={(skills ?? [])} strategy={verticalListSortingStrategy}>
             <div className="space-y-2">
-              {skills.map((skill) => (
+              {(skills ?? []).map((skill) => (
                 <SkillChip key={skill} skill={skill} onRemove={removeSkill} />
               ))}
             </div>
           </SortableContext>
         </DndContext>
       )}
+      <Button className="w-full mt-4" onClick={updateSkillsToDB}>
+        Update Skills
+      </Button>
     </section>
+
   );
 };
 

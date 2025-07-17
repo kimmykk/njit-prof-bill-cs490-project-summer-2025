@@ -54,9 +54,9 @@ export async function POST(request: Request) {
 
   // 4) Decide filename + type
   let filename: string, typeField: string;
-  if (blob instanceof File) {
-    filename = blob.name;
-    typeField = blob.type || "application/octet-stream";
+  if ('name' in blob && 'type' in blob) {
+    filename = (blob as any).name;
+    typeField = (blob as any).type || "application/octet-stream";
   } else {
     const txt = new TextDecoder("utf-8").decode(buf);
     filename = txt.slice(0, 10);
@@ -75,9 +75,9 @@ export async function POST(request: Request) {
   });
 
   return NextResponse.json({
-    fileId:   uploadStream.id.toString(),
+    fileId: uploadStream.id.toString(),
     filename,
-    type:     typeField,
+    type: typeField,
   });
 }
 
@@ -105,11 +105,11 @@ export async function GET(request: Request) {
 
   // 3) Map to lightweight shape
   const items = docs.map((f) => ({
-    id:        f._id.toString(),
-    filename:  f.filename,
+    id: f._id.toString(),
+    filename: f.filename,
     createdAt: f.uploadDate,
-    type:      f.contentType,
-    order:     f.metadata?.order ?? 0,
+    type: f.contentType,
+    order: f.metadata?.order ?? 0,
   }));
 
   return NextResponse.json(items);
