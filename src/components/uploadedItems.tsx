@@ -5,7 +5,7 @@ import React, {
   useState,
   useEffect,
   useCallback,
-  } from "react";
+} from "react";
 import { useAuth } from "@/context/authContext";
 import { useProfile } from "@/context/profileContext";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import * as mammoth from "mammoth";
-
 import {
   DndContext,
   closestCenter,
@@ -48,12 +47,38 @@ type UploadedRecord = {
 type SortBy = "order" | "name" | "date" | "type";
 type SortDir = "asc" | "desc";
 
+const getTypeLabel = (mime: string, filename?: string): string => {
+  const lowerName = filename?.toLowerCase().trim() ?? "";
+
+  if (lowerName.endsWith(".txt")) return "TXT";
+  if (lowerName.endsWith(".md")) return "MD";
+  if (lowerName.endsWith(".docx")) return "DOCX";
+  if (lowerName.endsWith(".pdf")) return "PDF";
+
+  if (mime === "text/plain") {
+    if (lowerName.includes("bib") || lowerName.includes("reference")) {
+      return "PLAIN";
+    }
+    return "TXT";
+  }
+
+  if (mime === "application/pdf") return "PDF";
+  if (
+    mime ===
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  )
+    return "DOCX";
+  if (mime === "text/markdown") return "MD";
+
+  return mime.split("/")[1]?.toUpperCase() || mime.toUpperCase();
+};
+
 function SortableTile(props: {
   record: UploadedRecord;
   fmt: (iso: string) => string;
   onClick: (r: UploadedRecord) => void;
   onDelete: (id: string) => void;
-  getTypeLabel: (m: string) => string;
+  getTypeLabel: (m: string, filename?: string) => string;
   viewMode: "list" | "icon";
   token: string;
   onParse: (id: string) => void;
@@ -70,8 +95,15 @@ function SortableTile(props: {
     onParse,
     isParsing,
   } = props;
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: it.id });
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: it.id });
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -80,9 +112,9 @@ function SortableTile(props: {
     cursor: isDragging ? "grabbing" : "grab",
   };
 
-  const thumbnailUrl =
-    `/api/download?id=${encodeURIComponent(it.id)}` +
-    `&type=upload&token=${encodeURIComponent(token)}`;
+  const thumbnailUrl = `/api/download?id=${encodeURIComponent(
+    it.id
+  )}&type=upload&token=${encodeURIComponent(token)}`;
 
   const deleteBtn = (
     <button
@@ -118,9 +150,13 @@ function SortableTile(props: {
         {...listeners}
         onClick={() => onClick(it)}
         style={style}
-        className="flex items-center justify-between p-2.5 bg-neutral-800 rounded hover:bg-neutral-700 cursor-pointer"
+        className="relative flex items-center justify-between p-2.5 bg-neutral-800 rounded hover:bg-neutral-700 cursor-pointer"
       >
-        <div {...attributes} {...listeners} className="p-1 cursor-grab hover:text-blue-400">
+        <div
+          {...attributes}
+          {...listeners}
+          className="p-1 cursor-grab hover:text-blue-400"
+        >
           <GripVertical className="h-4 w-4 text-neutral-400" />
         </div>
         <div className="flex items-center space-x-2 flex-1 min-w-0">
@@ -131,7 +167,7 @@ function SortableTile(props: {
           )}
           <span className="text-neutral-100 truncate">{it.filename}</span>
           <span className="ml-2 text-xs uppercase bg-neutral-700 text-neutral-300 px-1 rounded truncate">
-            {getTypeLabel(it.type)}
+            {getTypeLabel(it.type, it.filename)}
           </span>
         </div>
         <span className="ml-4 text-sm text-neutral-400 whitespace-nowrap flex-shrink-0">
@@ -141,6 +177,9 @@ function SortableTile(props: {
           {parseBtn}
           {deleteBtn}
         </div>
+        {isParsing && (
+          <div className="absolute bottom-0 left-0 h-1 w-full bg-blue-500 animate-pulse rounded-b" />
+        )}
       </li>
     );
   }
@@ -170,9 +209,11 @@ function SortableTile(props: {
         <FileIcon className="h-8 w-8 text-neutral-200" />
       )}
       <div className="mt-2 text-center w-full">
-        <span className="block text-sm text-neutral-100 truncate">{it.filename}</span>
+        <span className="block text-sm text-neutral-100 truncate">
+          {it.filename}
+        </span>
         <span className="block text-xs uppercase bg-neutral-700 text-neutral-300 inline-block px-1 rounded truncate">
-          {getTypeLabel(it.type)}
+          {getTypeLabel(it.type, it.filename)}
         </span>
         <span className="block text-xs text-neutral-400 truncate">
           {new Date(it.createdAt).toLocaleDateString()}
@@ -192,6 +233,9 @@ function SortableTile(props: {
         </Button>
         {deleteBtn}
       </div>
+      {isParsing && (
+        <div className="absolute bottom-0 left-0 h-1 w-full bg-blue-500 animate-pulse rounded-b" />
+      )}
     </div>
   );
 }
@@ -207,29 +251,18 @@ export default function UploadedItems() {
   const [sortDir, setSortDir] = useState<SortDir>("asc");
 
   const [selected, setSelected] = useState<UploadedRecord | null>(null);
-  const [previewMode, setPreviewMode] = useState<
-    "pdf" | "docx" | "md" | "text" | "other" | null
-  >(null);
+  const [previewMode, setPreviewMode] = useState<"pdf" | "docx" | "md" | "text" | "other" | null>(null);
   const [contentUrl, setContentUrl] = useState<string | null>(null);
   const [textContent, setTextContent] = useState<string | null>(null);
   const [loadingContent, setLoadingContent] = useState(false);
-
-  // track which file is currently being parsed
   const [parsingId, setParsingId] = useState<string | null>(null);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { delay: 200, tolerance: 5 },
-    })
+    useSensor(PointerSensor, { activationConstraint: { delay: 200, tolerance: 5 } })
   );
 
-  const getTypeLabel = (mime: string) =>
-    mime === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      ? "docx"
-      : mime.split("/")[1] || mime;
   const fmt = (iso: string) => new Date(iso).toLocaleString();
 
-  // Fetch uploads
   useEffect(() => {
     if (!user) {
       setItems([]);
@@ -264,7 +297,7 @@ export default function UploadedItems() {
     let cmp: (a: UploadedRecord, b: UploadedRecord) => number;
     if (sortBy === "name") cmp = (a, b) => a.filename.localeCompare(b.filename);
     else if (sortBy === "type")
-      cmp = (a, b) => getTypeLabel(a.type).localeCompare(getTypeLabel(b.type));
+      cmp = (a, b) => getTypeLabel(a.type, a.filename).localeCompare(getTypeLabel(b.type, b.filename));
     else cmp = (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
     arr.sort((a, b) => (sortDir === "asc" ? cmp(a, b) : -cmp(a, b)));
     return arr;

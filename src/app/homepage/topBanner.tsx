@@ -1,4 +1,3 @@
-// components/TopBanner.tsx
 "use client";
 
 import { useState } from "react";
@@ -7,12 +6,14 @@ import Image from "next/image";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { LoginForm } from "@/components/forms/loginForm";
 
-export default function TopBanner() {
+// Accepts a prop to trigger the modal from MarketingPage
+export default function TopBanner({ onShowExamples }: { onShowExamples?: () => void }) {
   const [showLogin, setShowLogin] = useState(false);
 
   return (
     <header className="w-full bg-white border-b border-gray-200 fixed top-0 left-0 z-50">
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+
         {/* Logo */}
         <Link href="/homepage" className="flex items-center space-x-2">
           <Image
@@ -25,12 +26,14 @@ export default function TopBanner() {
 
         {/* Navigation */}
         <div className="flex space-x-4 items-center">
-          <Link
-            href="/examples"
+
+          {/* See Examples — triggers modal in MarketingPage via prop */}
+          <button
+            onClick={onShowExamples}
             className="inline-block border border-blue-600 text-blue-600 hover:bg-blue-50 font-medium px-4 py-2 rounded-md"
           >
             See Examples
-          </Link>
+          </button>
 
           {/* Login Popover */}
           <Popover open={showLogin} onOpenChange={setShowLogin}>
