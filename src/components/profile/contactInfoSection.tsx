@@ -1,37 +1,78 @@
 // src/components/profile/ContactInfoSection.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { Mail, Phone, Plus, X } from "lucide-react";
 import { useProfile, ContactInfo } from "@/context/profileContext";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { useAuth } from "@/context/authContext";
 
 const ContactInfoSection: React.FC = () => {
   // pull out your actual context API
-  const { activeProfile: profile, updateContactInfo } = useProfile();
+  const { activeProfile: profile, updateContactInfo, activeProfileId, clearDirty, markDirty } = useProfile();
   const [showAdditionalEmails, setShowAdditionalEmails] = useState(false);
   const [showAdditionalPhones, setShowAdditionalPhones] = useState(false);
+  const { user } = useAuth();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
+    trigger,
     watch,
-  } = useForm<ContactInfo>({
-    defaultValues: profile.contactInfo,
-  });
+    reset,
+  } = useForm<ContactInfo>();
+
+  useEffect(() => {
+    if (profile?.contactInfo) {
+      reset(profile.contactInfo);
+    }
+  }, [profile?.contactInfo, reset]);
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      if (JSON.stringify(value) !== JSON.stringify(profile.contactInfo)) {
+        markDirty("contactInfo");
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, profile.contactInfo]);
 
   const additionalEmails = watch("additionalEmails") || [];
   const additionalPhones = watch("additionalPhones") || [];
 
-  const onSubmit = (data: ContactInfo) => {
-    // this will merge into profile.contactInfo
-    updateContactInfo(data);
+  const onSubmit = async (data: ContactInfo) => {
+    if (!user || !activeProfileId) return;
+
+    try {
+      const token = await user.getIdToken();
+
+      const res = await fetch(`/api/profiles/${activeProfileId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          data: { contactInfo: data },
+        }),
+      });
+
+      if (!res.ok) throw new Error("Failed to update contact info");
+
+      updateContactInfo(data);
+      clearDirty("contactInfo");
+      toast.success("Contact info updated!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update");
+    }
   };
 
   const addAdditionalEmail = () => {
@@ -98,6 +139,13 @@ const ContactInfoSection: React.FC = () => {
                   message: "Invalid email address",
                 },
               })}
+              onChange={(e) => {
+                const value = e.target.value;
+                setValue("email", value);
+                updateContactInfo({ email: value });
+                markDirty("contactInfo");
+                trigger("email");
+              }}
               type="email"
               className="pl-10"
               placeholder="your.email@example.com"
@@ -166,6 +214,13 @@ const ContactInfoSection: React.FC = () => {
             <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input
               {...register("phone", { required: "Phone number is required" })}
+              onChange={(e) => {
+                const value = e.target.value;
+                setValue("phone", value);
+                updateContactInfo({ phone: value });
+                markDirty("contactInfo");
+                trigger("phone");
+              }}
               type="tel"
               className="pl-10"
               placeholder="(555) 123-4567"

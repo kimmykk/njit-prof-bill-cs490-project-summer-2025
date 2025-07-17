@@ -5,7 +5,7 @@ import React, {
   useState,
   useEffect,
   useCallback,
-  } from "react";
+} from "react";
 import { useAuth } from "@/context/authContext";
 import { useProfile } from "@/context/profileContext";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,8 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { toast } from "sonner";
+import { CheckCircle } from "lucide-react";
 
 type UploadedRecord = {
   id: string;
@@ -217,6 +219,8 @@ export default function UploadedItems() {
   // track which file is currently being parsed
   const [parsingId, setParsingId] = useState<string | null>(null);
 
+  const [selectedFormat, setSelectedFormat] = useState("pdf");
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { delay: 200, tolerance: 5 },
@@ -351,6 +355,33 @@ export default function UploadedItems() {
 
   if (loading) return null;
 
+  const handleDownload = () => {
+    if (!selected || !textContent) return;
+
+    const blob = new Blob([textContent], {
+      type:
+        selectedFormat === "pdf"
+          ? "application/pdf"
+          : selectedFormat === "docx"
+            ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            : "text/plain",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${selected.filename.split(".")[0]}.${selectedFormat}`;
+    a.click();
+    toast.custom((t) => (
+      <div className="flex items-center gap-3 bg-green-600 text-white px-4 py-3 rounded shadow-lg">
+        <CheckCircle className="w-5 h-5 text-white" />
+        <span>Downloaded as {selectedFormat.toUpperCase()}</span>
+      </div>
+    ));
+    URL.revokeObjectURL(url);
+  };
+
+
   return (
     <div>
       {/* header + toggle */}
@@ -432,6 +463,18 @@ export default function UploadedItems() {
             </button>
 
             <h2 className="text-xl font-semibold text-neutral-100 mb-4">
+              <div className="mb-4">
+                <label className="block text-sm text-neutral-300 mb-1">Download Format:</label>
+                <select
+                  value={selectedFormat}
+                  onChange={(e) => setSelectedFormat(e.target.value)}
+                  className="bg-neutral-800 border border-neutral-700 text-white rounded px-2 py-1"
+                >
+                  <option value="pdf">PDF</option>
+                  <option value="docx">DOCX</option>
+                  <option value="txt">TXT</option>
+                </select>
+              </div>
               <a href={contentUrl!} download={selected.filename} className="text-blue-400 underline">
                 {selected.filename}
               </a>
@@ -452,6 +495,12 @@ export default function UploadedItems() {
             ) : (
               <p className="text-neutral-400">No preview available.</p>
             )}
+            <button
+              onClick={handleDownload}
+              className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+            >
+              Download as {selectedFormat.toUpperCase()}
+            </button>
           </div>
         </div>
       )}

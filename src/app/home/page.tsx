@@ -66,8 +66,8 @@ export default function HomePage() {
     {
       key: "contact" as const,
       label: "Contact Info",
-      variant: Boolean(profile.contactInfo.email),
-      status: profile.contactInfo.email ? "Complete" : "Pending",
+      variant: Boolean(profile.contactInfo?.email),
+      status: profile.contactInfo?.email ? "Complete" : "Pending",
     },
     {
       key: "objective" as const,
@@ -78,20 +78,20 @@ export default function HomePage() {
     {
       key: "skills" as const,
       label: "Skills",
-      variant: profile.skills.length > 0,
-      status: `${profile.skills.length} skills`,
+      variant: (profile.skills?.length ?? 0) > 0,
+      status: `${(profile.skills?.length ?? 0)} skills`,
     },
     {
       key: "jobs" as const,
       label: "Jobs",
-      variant: profile.jobHistory.length > 0,
-      status: `${profile.jobHistory.length} jobs`,
+      variant: (profile.jobHistory?.length ?? 0) > 0,
+      status: `${(profile.jobHistory?.length ?? 0)} jobs`,
     },
     {
       key: "education" as const,
       label: "Education",
-      variant: profile.education.length > 0,
-      status: `${profile.education.length} entries`,
+      variant: (profile.education?.length ?? 0) > 0,
+      status: `${(profile.education?.length ?? 0)} entries`,
     },
   ];
 
@@ -112,8 +112,7 @@ export default function HomePage() {
   const onDelete = async () => {
     if (
       confirm(
-        `Delete profile “${
-          profiles.find((p) => p.id === activeProfileId)?.name
+        `Delete profile “${profiles.find((p) => p.id === activeProfileId)?.name
         }”?`
       )
     ) {
