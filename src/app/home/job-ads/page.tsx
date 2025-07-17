@@ -35,14 +35,11 @@ export default function JobAdsPage() {
   const [parsed, setParsed] = useState<ParsedJob | null>(null);
   const [loading, setLoading] = useState(false);
   const [parsing, setParsing] = useState(false);
-
-  // NEW: profiles for resume gen
   const [profiles, setProfiles] = useState<{ id: string; name: string }[]>([]);
   const [selectedProfileId, setSelectedProfileId] = useState<string>("");
   const [generating, setGenerating] = useState(false);
   const [generatedResume, setGeneratedResume] = useState<string>("");
 
-  // Load job ads + profiles on mount
   useEffect(() => {
     if (!user) return;
     user.getIdToken().then((token) => {
@@ -68,7 +65,6 @@ export default function JobAdsPage() {
     });
   }, [user]);
 
-  // Re-parse when selectedAd changes
   useEffect(() => {
     if (!selectedAd) {
       setParsed(null);
@@ -85,11 +81,10 @@ export default function JobAdsPage() {
     })
       .then((r) => r.json())
       .then((pj: ParsedJob) => setParsed(pj))
-      .catch((err) => toast.error(err.message))
+      .catch((err) => toast.error("Failed to parse job ad"))
       .finally(() => setParsing(false));
   }, [selectedAd, toast]);
 
-  // Save a new ad
   const handleSave = async () => {
     if (!user) return;
     setLoading(true);
@@ -101,7 +96,10 @@ export default function JobAdsPage() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ url: url || undefined, rawText: rawText || undefined }),
+        body: JSON.stringify({
+          url: url || undefined,
+          rawText: rawText || undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Save failed");
@@ -128,7 +126,29 @@ export default function JobAdsPage() {
     }
   };
 
-  // NEW: Generate resume
+  const handleDeleteAd = async (id: string) => {
+    if (!user) return;
+    try {
+      const token = await user.getIdToken();
+      const res = await fetch(`/api/job-ads/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || "Failed to delete job ad");
+      }
+
+      setJobAds((prev) => prev.filter((ad) => ad.id !== id));
+      if (selectedAd?.id === id) setSelectedAd(null);
+
+      toast.success("Job ad deleted!");
+    } catch (err) {
+      toast.error((err as Error).message);
+    }
+  };
+
   const handleGenerate = async () => {
     if (!user || !selectedAd || !selectedProfileId) return;
     setGenerating(true);
@@ -158,7 +178,7 @@ export default function JobAdsPage() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 py-8">
-      {/* Left: Form + Details + Resume Gen */}
+      {/* Main Content */}
       <div className="lg:col-span-3 space-y-8">
         {/* Form */}
         <section className="p-6 bg-neutral-800 rounded-lg space-y-4">
@@ -187,7 +207,7 @@ export default function JobAdsPage() {
           </Button>
         </section>
 
-        {/* AI-Extracted */}
+        {/* Parsed Info */}
         {selectedAd && (
           <section className="p-6 bg-neutral-800 rounded-lg space-y-4">
             <h2 className="text-xl font-semibold">
@@ -223,23 +243,6 @@ export default function JobAdsPage() {
           </section>
         )}
 
-        {/* Full-Text Verbatim */}
-        {/* {selectedAd && (
-          <section className="p-6 bg-neutral-800 rounded-lg">
-            <h2 className="text-xl font-semibold mb-2">Full Text (verbatim)</h2>
-            {selectedAd.rawText ? (
-              <pre className="whitespace-pre-wrap bg-neutral-700 p-4 rounded max-h-[500px] overflow-auto text-sm">
-                {selectedAd.rawText}
-              </pre>
-            ) : (
-              <div
-                className="prose prose-invert bg-neutral-700 p-4 rounded max-h-[500px] overflow-auto"
-                dangerouslySetInnerHTML={{ __html: selectedAd.previewHtml }}
-              />
-            )}
-          </section>
-        )} */}
-
         {/* Resume Generation */}
         {selectedAd && profiles.length > 0 && (
           <section className="p-6 bg-neutral-800 rounded-lg space-y-4">
@@ -269,29 +272,47 @@ export default function JobAdsPage() {
         )}
       </div>
 
-      {/* Sidebar: List */}
-      <aside className="space-y-4">
-        <h2 className="text-xl font-semibold">Previous Job Ads</h2>
-        <ul className="space-y-2">
-          {jobAds.map((ad) => (
-            <li key={ad.id}>
-              <button
-                onClick={() => setSelectedAd(ad)}
-                className={`w-full text-left p-3 rounded-lg transition ${
-                  selectedAd?.id === ad.id
+      {/* Sidebar */}
+      <aside className="bg-neutral-900 p-4 rounded-lg space-y-4 border border-neutral-700 h-fit">
+        <h2 className="text-xl font-semibold text-white">Saved Job Ads</h2>
+
+        {jobAds.length === 0 ? (
+          <div className="text-center py-16 text-neutral-400 space-y-2">
+            <div className="text-5xl">=(</div>
+            <p className="text-sm">No job ads saved yet.</p>
+            <p className="text-xs">Paste a link or job description above to get started!</p>
+          </div>
+        ) : (
+          <ul className="space-y-3">
+            {jobAds.map((ad) => (
+              <li key={ad.id} className="flex items-center gap-2">
+                <button
+                  onClick={() => setSelectedAd(ad)}
+                  className={`flex-1 text-left p-3 rounded-lg transition text-sm ${selectedAd?.id === ad.id
                     ? "bg-blue-600 text-white"
                     : "bg-neutral-800 hover:bg-neutral-700 text-neutral-200"
-                }`}
-              >
-                <div className="font-medium">{ad.jobTitle}</div>
-                <div className="text-xs text-neutral-400">
-                  {ad.companyName} •{" "}
-                  {new Date(ad.postedAt).toLocaleDateString()}
-                </div>
-              </button>
-            </li>
-          ))}
-        </ul>
+                    }`}
+                >
+                  <div className="font-medium">{ad.jobTitle}</div>
+                  <div className="text-xs text-neutral-400">
+                    {ad.companyName} • {new Date(ad.postedAt).toLocaleDateString()}
+                  </div>
+                </button>
+                <button
+                  onClick={() => {
+                    if (confirm("Are you sure you want to delete this job ad?")) {
+                      handleDeleteAd(ad.id);
+                    }
+                  }}
+                  className="text-red-400 hover:text-red-500 text-sm"
+                  title="Delete"
+                >
+                  🗑
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </aside>
     </div>
   );
